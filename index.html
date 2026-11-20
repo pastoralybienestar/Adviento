@@ -1,0 +1,2341 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adviento: encendamos la esperanza</title>
+
+    <!-- Tipografía Poppins desde Google Fonts con respaldo del sistema -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&display=swap" rel="stylesheet">
+
+    <style>
+        /* =====================================================================
+           VARIABLES DE DISEÑO Y CONFIGURACIÓN BASE (CSS NATIVO)
+           ===================================================================== */
+        :root {
+            --font-main: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --color-night-950: #070a19;
+            --color-night-900: #0c112b;
+            --color-night-800: #151b3d;
+            --color-violet: #4c1d95;
+            --color-purple: #6d28d9;
+            --color-purple-light: #7c3aed;
+            --color-rose: #db2777;
+            --color-rose-light: #ec4899;
+            --color-gold: #f5c56b;
+            --color-amber-100: #fef3c7;
+            --color-amber-200: #fde68a;
+            --color-amber-300: #fcd34d;
+            --color-amber-950: #451a03;
+            --color-emerald-200: #a7f3d0;
+            --color-emerald-300: #6ee7b7;
+            --color-text-main: #f8fafc;
+            --color-text-soft: #e2e8f0;
+            --color-text-muted: #cbd5e1;
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background: radial-gradient(ellipse at 50% 25%, #1e1438 0%, #0d122b 52%, #060916 100%);
+            color: var(--color-text-main);
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            min-height: 100vh;
+            line-height: 1.5;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        button {
+            font-family: inherit;
+            cursor: pointer;
+            border: none;
+            background: none;
+            color: inherit;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* =====================================================================
+           CONTENEDOR PRINCIPAL 16:9 ADAPTABLE
+           ===================================================================== */
+        .stage-container {
+            position: relative;
+            width: 100%;
+            max-width: 1320px;
+            min-height: 100vh;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+        }
+
+        @media (min-width: 1024px) and (min-height: 680px) {
+            body {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 1rem;
+            }
+            .stage-container {
+                min-height: auto;
+                aspect-ratio: 16 / 9;
+                border-radius: 1.5rem;
+                border: 1px solid rgba(245, 197, 107, 0.16);
+                box-shadow: 0 25px 70px rgba(0, 0, 0, 0.7), inset 0 0 80px rgba(109, 40, 217, 0.14);
+                background: radial-gradient(ellipse at 50% 42%, #241642 0%, #101533 58%, #080b1c 100%);
+            }
+        }
+
+        /* Canvas de partículas y resplandor ambiental */
+        .particle-canvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .ambient-warmth {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background: radial-gradient(circle at 50% 50%, rgba(251, 191, 36, 0.34) 0%, rgba(217, 119, 6, 0.14) 32%, rgba(124, 58, 237, 0.06) 58%, transparent 75%);
+            opacity: 0;
+            transition: opacity 1.4s ease, transform 1.6s ease;
+            transform: scale(0.88);
+            z-index: 1;
+        }
+
+        /* =====================================================================
+           ENCABEZADO SUPERIOR
+           ===================================================================== */
+        .app-header {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            padding: 1rem 1rem 0.5rem;
+        }
+
+        .brand-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .brand-eyebrow {
+            display: flex;
+            align-items: center;
+            gap: 0.625rem;
+        }
+
+        .brand-dot {
+            display: inline-block;
+            width: 0.5rem;
+            height: 0.5rem;
+            border-radius: 9999px;
+            background-color: var(--color-amber-300);
+            box-shadow: 0 0 10px var(--color-amber-300);
+        }
+
+        .brand-kicker {
+            font-size: 0.6875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.22em;
+            color: rgba(253, 230, 138, 0.8);
+            font-weight: 500;
+        }
+
+        .brand-title {
+            margin: 0.125rem 0 0;
+            font-size: 1.25rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            background: linear-gradient(90deg, #fef3c7 0%, #fde68a 50%, #e9d5ff 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .control-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 0.85rem;
+            border-radius: 0.75rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(253, 230, 138, 0.16);
+            font-size: 0.75rem;
+            color: rgba(254, 243, 199, 0.88);
+            transition: background-color 0.2s ease, border-color 0.2s ease;
+        }
+
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.11);
+            border-color: rgba(253, 230, 138, 0.3);
+        }
+
+        .control-btn:focus-visible {
+            outline: 2px solid rgba(252, 211, 77, 0.55);
+            outline-offset: 2px;
+        }
+
+        .control-icon {
+            width: 1rem;
+            height: 1rem;
+            color: var(--color-amber-300);
+            flex-shrink: 0;
+        }
+
+        .control-icon.muted {
+            color: #94a3b8;
+        }
+
+        .sound-label {
+            display: none;
+        }
+
+        /* =====================================================================
+           ÁREA CENTRAL Y CORONA DE ADVIENTO
+           ===================================================================== */
+        .app-main {
+            position: relative;
+            z-index: 10;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 0.25rem 0.75rem;
+        }
+
+        .guide-banner {
+            text-align: center;
+            max-width: 42rem;
+            margin: 0 auto 0.5rem;
+            transition: opacity 0.6s ease;
+        }
+
+        .guide-pill {
+            margin: 0;
+            font-size: 0.75rem;
+            color: rgba(254, 243, 199, 0.92);
+            font-weight: 300;
+            letter-spacing: 0.02em;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(253, 230, 138, 0.16);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 0.5rem 1.15rem;
+            border-radius: 9999px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.28);
+        }
+
+        .wreath-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 780px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: auto 0;
+        }
+
+        .wreath-svg {
+            width: 100%;
+            height: auto;
+            max-height: 54vh;
+            user-select: none;
+            overflow: visible;
+        }
+
+        .completion-card {
+            max-width: 42rem;
+            margin: 0.25rem auto;
+            padding: 0.875rem 1.25rem;
+            border-radius: 1rem;
+            background: linear-gradient(90deg, rgba(245, 158, 11, 0.15) 0%, rgba(88, 28, 135, 0.42) 50%, rgba(245, 158, 11, 0.15) 100%);
+            border: 1px solid rgba(252, 211, 77, 0.35);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            text-align: center;
+            box-shadow: 0 0 35px rgba(251, 191, 36, 0.18);
+        }
+
+        .completion-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .completion-star-icon {
+            color: var(--color-amber-300);
+            font-size: 0.875rem;
+        }
+
+        .completion-label {
+            font-size: 0.6875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: var(--color-amber-200);
+            font-weight: 600;
+        }
+
+        .completion-message {
+            margin: 0;
+            font-size: 0.8125rem;
+            color: #fffbeb;
+            font-weight: 400;
+            line-height: 1.6;
+            font-style: italic;
+        }
+
+        /* =====================================================================
+           ANIMACIONES DE LLAMAS, VELAS Y ESTRELLA FINAL
+           ===================================================================== */
+        .flame-group {
+            opacity: 0;
+            transform-box: fill-box;
+            transform-origin: 50% 92%;
+            transform: scale(0.15);
+            transition: opacity 0.6s ease, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+            pointer-events: none;
+        }
+
+        .candle-unit.is-lit .flame-group {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .flame-outer {
+            transform-box: fill-box;
+            transform-origin: 50% 90%;
+            animation: flickerOuter 2.4s ease-in-out infinite alternate;
+        }
+
+        .flame-inner {
+            transform-box: fill-box;
+            transform-origin: 50% 90%;
+            animation: flickerInner 1.7s ease-in-out infinite alternate;
+        }
+
+        .flame-halo {
+            transform-box: fill-box;
+            transform-origin: 50% 50%;
+            animation: haloPulse 3.2s ease-in-out infinite;
+        }
+
+        @keyframes flickerOuter {
+            0%   { transform: scale(1, 1) skewX(-1.5deg); }
+            25%  { transform: scale(0.96, 1.06) skewX(2deg); }
+            50%  { transform: scale(1.03, 0.97) skewX(-2.5deg); }
+            75%  { transform: scale(0.97, 1.04) skewX(1.5deg); }
+            100% { transform: scale(1.02, 1.01) skewX(-1deg); }
+        }
+
+        @keyframes flickerInner {
+            0%   { transform: scale(1, 1) skewX(1deg); }
+            35%  { transform: scale(0.94, 1.07) skewX(-1.5deg); }
+            70%  { transform: scale(1.04, 0.96) skewX(2deg); }
+            100% { transform: scale(0.98, 1.03) skewX(-1deg); }
+        }
+
+        @keyframes haloPulse {
+            0%, 100% { opacity: 0.78; transform: scale(1); }
+            50%      { opacity: 0.96; transform: scale(1.09); }
+        }
+
+        .candle-unit {
+            cursor: pointer;
+            transition: filter 0.35s ease;
+            outline: none;
+        }
+
+        .candle-label-group {
+            cursor: pointer;
+        }
+
+        .candle-unit:hover .candle-hover-ring,
+        .candle-unit:focus-visible .candle-hover-ring {
+            opacity: 0.85;
+            transform: scale(1.06);
+        }
+
+        .candle-hover-ring {
+            opacity: 0;
+            transform-box: fill-box;
+            transform-origin: center;
+            transition: opacity 0.3s ease, transform 0.35s ease;
+        }
+
+        .candle-unit:not(.is-lit):hover {
+            filter: drop-shadow(0 0 12px rgba(245, 197, 107, 0.45));
+        }
+
+        .candle-unit.is-lit {
+            filter: drop-shadow(0 0 16px rgba(251, 191, 36, 0.35));
+        }
+
+        .completion-star {
+            opacity: 0;
+            transform-box: fill-box;
+            transform-origin: center;
+            transform: scale(0.4);
+            transition: opacity 1.5s ease, transform 1.6s cubic-bezier(0.22, 1, 0.36, 1);
+            pointer-events: none;
+        }
+
+        .all-lit .completion-star {
+            opacity: 1;
+            transform: scale(1);
+            animation: starBreathe 4.5s ease-in-out infinite;
+        }
+
+        @keyframes starBreathe {
+            0%, 100% { filter: drop-shadow(0 0 14px rgba(253, 224, 71, 0.85)); transform: scale(1); }
+            50%      { filter: drop-shadow(0 0 28px rgba(253, 224, 71, 1)); transform: scale(1.08); }
+        }
+
+        /* =====================================================================
+           BARRA INFERIOR DE PROGRESO (4 SEMANAS)
+           ===================================================================== */
+        .app-footer {
+            position: relative;
+            z-index: 10;
+            padding: 0.5rem 1rem 1rem;
+        }
+
+        .progress-card {
+            max-width: 48rem;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(253, 230, 138, 0.16);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 1rem;
+            padding: 0.75rem 1rem;
+            box-shadow: 0 14px 32px rgba(0, 0, 0, 0.35);
+        }
+
+        .progress-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.6875rem;
+            color: rgba(254, 243, 199, 0.76);
+            margin-bottom: 0.5rem;
+            gap: 0.5rem;
+        }
+
+        .progress-title {
+            font-weight: 500;
+            letter-spacing: 0.02em;
+        }
+
+        .progress-counters {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .lit-count-text {
+            color: var(--color-amber-200);
+            font-weight: 500;
+        }
+
+        .counter-divider,
+        .commitment-count-text {
+            display: none;
+        }
+
+        .counter-divider {
+            color: rgba(255, 255, 255, 0.22);
+        }
+
+        .commitment-count-text {
+            color: rgba(110, 231, 183, 0.92);
+        }
+
+        .progress-track-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .progress-track {
+            position: absolute;
+            left: 1rem;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            height: 0.25rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 9999px;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #a855f7 0%, #f472b6 50%, #fcd34d 100%);
+            border-radius: 9999px;
+            transition: width 0.7s ease-out;
+        }
+
+        .progress-steps {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 0.5rem;
+        }
+
+        .progress-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.3rem;
+            padding: 0.45rem 0.5rem;
+            border-radius: 0.75rem;
+            background: rgba(15, 20, 46, 0.92);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            min-width: 0;
+        }
+
+        .progress-step:hover {
+            border-color: rgba(253, 230, 138, 0.32);
+        }
+
+        .progress-step:focus-visible {
+            outline: 2px solid rgba(252, 211, 77, 0.55);
+            outline-offset: 2px;
+        }
+
+        .progress-step.is-lit {
+            background: rgba(26, 23, 59, 0.96);
+            border-color: rgba(252, 211, 77, 0.48);
+            box-shadow: 0 0 15px rgba(251, 191, 36, 0.18);
+        }
+
+        .step-dot {
+            width: 0.625rem;
+            height: 0.625rem;
+            border-radius: 9999px;
+            transition: all 0.5s ease;
+            flex-shrink: 0;
+        }
+
+        .step-dot.is-purple {
+            background: rgba(168, 85, 247, 0.62);
+        }
+
+        .step-dot.is-rose {
+            background: rgba(236, 72, 153, 0.65);
+        }
+
+        .progress-step.is-lit .step-dot {
+            background: var(--color-amber-300);
+            box-shadow: 0 0 10px var(--color-amber-300);
+        }
+
+        .step-label {
+            font-size: 0.6875rem;
+            font-weight: 500;
+            color: #cbd5e1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
+        }
+
+        .progress-step:hover .step-label {
+            color: #ffffff;
+        }
+
+        .progress-step.is-lit .step-label {
+            color: var(--color-amber-100);
+        }
+
+        .step-roman {
+            display: none;
+        }
+
+        .step-check {
+            font-size: 0.65rem;
+            color: var(--color-emerald-300);
+            font-weight: 600;
+        }
+
+        /* =====================================================================
+           MODALES (REFLEXIÓN ESPIRITUAL Y CONFIRMACIÓN DE REINICIO)
+           ===================================================================== */
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            z-index: 50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem;
+            background: rgba(2, 6, 23, 0.76);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+
+        .modal-backdrop.is-open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-card {
+            position: relative;
+            width: 100%;
+            max-width: 42rem;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            border-radius: 1.5rem;
+            background: linear-gradient(180deg, rgba(26, 19, 54, 0.96) 0%, rgba(18, 22, 51, 0.96) 52%, rgba(12, 16, 38, 0.98) 100%);
+            border: 1px solid rgba(253, 230, 138, 0.24);
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.75);
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(18px) scale(0.97);
+            transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .modal-backdrop.is-open .modal-card {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        .modal-accent {
+            height: 0.375rem;
+            width: 100%;
+            background: linear-gradient(90deg, #6d28d9 0%, #fcd34d 50%, #7c3aed 100%);
+            flex-shrink: 0;
+        }
+
+        .modal-accent.is-rose {
+            background: linear-gradient(90deg, #db2777 0%, #fcd34d 50%, #ec4899 100%);
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 1rem;
+            padding: 1.25rem 1.25rem 0.75rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .modal-header-left {
+            display: flex;
+            align-items: center;
+            gap: 0.875rem;
+        }
+
+        .modal-candle-badge {
+            flex-shrink: 0;
+            width: 2.75rem;
+            height: 2.75rem;
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(253, 230, 138, 0.25);
+            background: rgba(88, 28, 135, 0.58);
+            box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.35);
+        }
+
+        .modal-candle-badge.is-rose {
+            border-color: rgba(249, 168, 212, 0.38);
+            background: rgba(131, 24, 67, 0.52);
+        }
+
+        .modal-badge-svg {
+            width: 1.5rem;
+            height: 1.5rem;
+        }
+
+        .modal-subtitle {
+            margin: 0;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.18em;
+            color: rgba(252, 211, 77, 0.9);
+            font-weight: 500;
+        }
+
+        .modal-title {
+            margin: 0.15rem 0 0;
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #ffffff;
+            line-height: 1.35;
+        }
+
+        .modal-close-btn {
+            padding: 0.5rem;
+            border-radius: 0.75rem;
+            color: #cbd5e1;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+
+        .modal-close-btn:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .modal-close-btn:focus-visible {
+            outline: 2px solid rgba(252, 211, 77, 0.55);
+            outline-offset: 2px;
+        }
+
+        .modal-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .section-heading {
+            margin: 0 0 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.16em;
+            font-weight: 600;
+        }
+
+        .section-heading.amber {
+            color: rgba(253, 230, 138, 0.85);
+        }
+
+        .section-heading.gold {
+            color: var(--color-amber-300);
+        }
+
+        .section-heading.purple {
+            color: rgba(233, 213, 255, 0.92);
+        }
+
+        .heading-dot {
+            width: 0.375rem;
+            height: 0.375rem;
+            border-radius: 9999px;
+            display: inline-block;
+        }
+
+        .heading-dot.amber { background-color: var(--color-amber-300); }
+        .heading-dot.purple { background-color: #d8b4fe; }
+        .heading-dot.emerald { background-color: var(--color-emerald-300); }
+
+        .modal-text {
+            margin: 0;
+            font-size: 0.875rem;
+            color: rgba(241, 245, 249, 0.95);
+            line-height: 1.65;
+            font-weight: 300;
+        }
+
+        .prayer-box {
+            border-radius: 1rem;
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.09) 0%, rgba(168, 85, 247, 0.08) 55%, transparent 100%);
+            border: 1px solid rgba(253, 230, 138, 0.22);
+            padding: 1rem;
+        }
+
+        .prayer-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .prayer-header .section-heading {
+            margin-bottom: 0;
+        }
+
+        .prayer-note {
+            font-size: 0.6875rem;
+            color: rgba(254, 243, 199, 0.62);
+            font-style: italic;
+        }
+
+        .prayer-text {
+            margin: 0;
+            font-size: 0.875rem;
+            color: rgba(255, 251, 235, 0.95);
+            line-height: 1.68;
+            font-style: italic;
+            font-weight: 300;
+        }
+
+        .question-box {
+            border-radius: 1rem;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+        }
+
+        .question-text {
+            margin: 0;
+            font-size: 0.875rem;
+            color: #ffffff;
+            font-weight: 500;
+            line-height: 1.6;
+        }
+
+        .commitment-box {
+            border-radius: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(253, 230, 138, 0.2);
+            padding: 1rem;
+        }
+
+        .commitment-layout {
+            display: flex;
+            flex-direction: column;
+            gap: 0.85rem;
+        }
+
+        .commitment-info {
+            flex: 1;
+        }
+
+        .commitment-btn {
+            flex-shrink: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.65rem 1rem;
+            border-radius: 0.75rem;
+            font-size: 0.8125rem;
+            font-weight: 500;
+            border: 1px solid rgba(252, 211, 77, 0.36);
+            background: rgba(252, 211, 77, 0.1);
+            color: var(--color-amber-100);
+            transition: all 0.3s ease;
+        }
+
+        .commitment-btn:hover {
+            background: rgba(252, 211, 77, 0.2);
+        }
+
+        .commitment-btn:focus-visible {
+            outline: 2px solid rgba(252, 211, 77, 0.6);
+            outline-offset: 2px;
+        }
+
+        .commitment-btn .check-icon {
+            width: 1rem;
+            height: 1rem;
+            opacity: 0.4;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .commitment-btn.is-done {
+            background: rgba(16, 185, 129, 0.2);
+            border-color: rgba(52, 211, 153, 0.52);
+            color: var(--color-emerald-200);
+            box-shadow: 0 0 18px rgba(16, 185, 129, 0.22);
+        }
+
+        .commitment-btn.is-done .check-icon {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        .modal-footer {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.5rem;
+            padding: 1rem 1.25rem;
+            background: rgba(0, 0, 0, 0.25);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            padding: 0.5rem 0.875rem;
+            border-radius: 0.75rem;
+            font-size: 0.75rem;
+            color: #e2e8f0;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: background-color 0.2s ease, opacity 0.2s ease;
+        }
+
+        .nav-btn:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.35;
+            pointer-events: none;
+        }
+
+        .primary-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.55rem 1.15rem;
+            border-radius: 0.75rem;
+            font-size: 0.8125rem;
+            font-weight: 500;
+            color: var(--color-amber-950);
+            background: linear-gradient(90deg, #fde68a 0%, #fcd34d 50%, #fde68a 100%);
+            box-shadow: 0 0 20px rgba(251, 191, 36, 0.3);
+            transition: filter 0.2s ease, transform 0.2s ease;
+        }
+
+        .primary-btn:hover {
+            filter: brightness(1.06);
+        }
+
+        /* Modal de confirmación de reinicio */
+        .reset-modal-card {
+            max-width: 26rem;
+            padding: 1.5rem;
+            text-align: center;
+            background: #141733;
+            border-radius: 1.25rem;
+        }
+
+        .reset-icon-wrap {
+            width: 3rem;
+            height: 3rem;
+            border-radius: 1rem;
+            background: rgba(251, 191, 36, 0.1);
+            border: 1px solid rgba(252, 211, 77, 0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            color: var(--color-amber-300);
+        }
+
+        .reset-title {
+            margin: 0 0 0.5rem;
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .reset-desc {
+            margin: 0 0 1.5rem;
+            font-size: 0.875rem;
+            color: #cbd5e1;
+            font-weight: 300;
+        }
+
+        .reset-actions {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+
+        /* Transición suave al cambiar contenido */
+        .content-fade {
+            animation: fadeInContent 0.45s ease forwards;
+        }
+
+        @keyframes fadeInContent {
+            from { opacity: 0; transform: translateY(8px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Scrollbar sutil */
+        .custom-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 999px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: rgba(245, 197, 107, 0.3);
+            border-radius: 999px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb:hover {
+            background: rgba(245, 197, 107, 0.5);
+        }
+
+        /* =====================================================================
+           DISEÑO RESPONSIVO (MÓVIL, TABLET Y ESCRITORIO)
+           ===================================================================== */
+        @media (min-width: 640px) {
+            .app-header {
+                padding: 1.5rem 2rem 0.5rem;
+            }
+            .brand-kicker {
+                font-size: 0.75rem;
+            }
+            .brand-title {
+                font-size: 1.5rem;
+            }
+            .header-controls {
+                gap: 0.75rem;
+            }
+            .control-btn {
+                font-size: 0.875rem;
+            }
+            .sound-label {
+                display: inline;
+            }
+            .app-main {
+                padding: 0.25rem 1.5rem;
+            }
+            .guide-pill {
+                font-size: 0.875rem;
+                padding: 0.5rem 1.5rem;
+            }
+            .completion-message {
+                font-size: 0.875rem;
+            }
+            .app-footer {
+                padding: 0.5rem 2rem 1.5rem;
+            }
+            .progress-card {
+                padding: 0.85rem 1.5rem;
+            }
+            .progress-meta {
+                font-size: 0.75rem;
+            }
+            .counter-divider,
+            .commitment-count-text {
+                display: inline;
+            }
+            .progress-step {
+                flex-direction: row;
+                gap: 0.45rem;
+                padding: 0.5rem 0.65rem;
+            }
+            .step-label {
+                font-size: 0.75rem;
+            }
+            .modal-backdrop {
+                padding: 1.5rem;
+            }
+            .modal-header {
+                padding: 1.35rem 1.75rem 0.85rem;
+            }
+            .modal-title {
+                font-size: 1.45rem;
+            }
+            .modal-body {
+                padding: 1.35rem 1.75rem;
+            }
+            .modal-text,
+            .prayer-text,
+            .question-text {
+                font-size: 0.9375rem;
+            }
+            .prayer-box,
+            .question-box,
+            .commitment-box {
+                padding: 1.25rem;
+            }
+            .commitment-layout {
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+            }
+            .modal-footer {
+                padding: 1rem 1.75rem;
+            }
+            .nav-btn,
+            .primary-btn {
+                font-size: 0.875rem;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .step-roman {
+                display: inline;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .brand-title {
+                font-size: 1.875rem;
+            }
+            .guide-pill {
+                font-size: 0.95rem;
+            }
+            .wreath-svg {
+                max-height: 56vh;
+            }
+            .completion-message {
+                font-size: 0.9375rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Escenario principal 16:9 adaptable -->
+    <div id="stage" class="stage-container">
+
+        <!-- Canvas de partículas de luz cálida y destellos -->
+        <canvas id="particleCanvas" class="particle-canvas"></canvas>
+
+        <!-- Halo ambiental cálido que responde al número de velas encendidas -->
+        <div id="ambientWarmth" class="ambient-warmth"></div>
+
+        <!-- Encabezado superior -->
+        <header class="app-header">
+            <div class="brand-group">
+                <div class="brand-eyebrow">
+                    <span class="brand-dot"></span>
+                    <span class="brand-kicker">Camino de oración y encuentro</span>
+                </div>
+                <h1 class="brand-title">Adviento: encendamos la esperanza</h1>
+            </div>
+
+            <!-- Controles discretos: Audio contemplativo y Reiniciar -->
+            <div class="header-controls">
+                <button id="soundToggleBtn" type="button" aria-label="Activar o desactivar sonido suave" class="control-btn">
+                    <svg id="soundIconOn" class="control-icon" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M11 5L6 9H2v6h4l5 4V5z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.54 8.46a5 5 0 010 7.07M19.07 4.93a10 10 0 010 14.14"></path>
+                    </svg>
+                    <svg id="soundIconOff" class="control-icon muted hidden" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M11 5L6 9H2v6h4l5 4V5z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M23 9l-6 6M17 9l6 6"></path>
+                    </svg>
+                    <span class="sound-label" id="soundLabel">Sonido</span>
+                </button>
+
+                <button id="resetBtn" type="button" class="control-btn">
+                    <svg class="control-icon" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                    </svg>
+                    <span>Reiniciar</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Área central: Corona de Adviento interactiva -->
+        <main class="app-main">
+
+            <!-- Mensaje guía -->
+            <div id="guideBanner" class="guide-banner">
+                <p id="guideText" class="guide-pill">
+                    Haz clic en una vela para encenderla y comenzar tu camino de Adviento
+                </p>
+            </div>
+
+            <!-- SVG de la Corona de Adviento realista -->
+            <div class="wreath-wrapper">
+                <svg id="wreathSvg" viewBox="0 0 900 470" class="wreath-svg" role="img" aria-label="Corona de Adviento con cuatro velas interactivas">
+                    <defs>
+                        <!-- Gradientes de luz y sombras -->
+                        <radialGradient id="wreathGlow" cx="50%" cy="55%" r="50%">
+                            <stop offset="0%" stop-color="#fde68a" stop-opacity="0.45"/>
+                            <stop offset="45%" stop-color="#d97706" stop-opacity="0.16"/>
+                            <stop offset="100%" stop-color="#0f172a" stop-opacity="0"/>
+                        </radialGradient>
+
+                        <radialGradient id="tableShadow" cx="50%" cy="50%" r="50%">
+                            <stop offset="0%" stop-color="#020617" stop-opacity="0.82"/>
+                            <stop offset="68%" stop-color="#020617" stop-opacity="0.42"/>
+                            <stop offset="100%" stop-color="#020617" stop-opacity="0"/>
+                        </radialGradient>
+
+                        <!-- Gradientes de velas moradas (3D cilíndrico) -->
+                        <linearGradient id="purpleCandleBody" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stop-color="#3b1266"/>
+                            <stop offset="28%" stop-color="#6d28d9"/>
+                            <stop offset="52%" stop-color="#7c3aed"/>
+                            <stop offset="78%" stop-color="#4c1d95"/>
+                            <stop offset="100%" stop-color="#2e0e52"/>
+                        </linearGradient>
+
+                        <radialGradient id="purpleCandleTop" cx="45%" cy="45%" r="55%">
+                            <stop offset="0%" stop-color="#a78bfa"/>
+                            <stop offset="65%" stop-color="#6d28d9"/>
+                            <stop offset="100%" stop-color="#4c1d95"/>
+                        </radialGradient>
+
+                        <!-- Gradientes de vela rosada - Gaudete (3D cilíndrico) -->
+                        <linearGradient id="roseCandleBody" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stop-color="#7a1545"/>
+                            <stop offset="28%" stop-color="#db2777"/>
+                            <stop offset="52%" stop-color="#f472b6"/>
+                            <stop offset="78%" stop-color="#be185d"/>
+                            <stop offset="100%" stop-color="#631037"/>
+                        </linearGradient>
+
+                        <radialGradient id="roseCandleTop" cx="45%" cy="45%" r="55%">
+                            <stop offset="0%" stop-color="#fbcfe8"/>
+                            <stop offset="65%" stop-color="#ec4899"/>
+                            <stop offset="100%" stop-color="#9d174d"/>
+                        </radialGradient>
+
+                        <!-- Gradiente de base metálica dorada para las velas -->
+                        <linearGradient id="brassHolder" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stop-color="#78350f"/>
+                            <stop offset="30%" stop-color="#f59e0b"/>
+                            <stop offset="55%" stop-color="#fef3c7"/>
+                            <stop offset="80%" stop-color="#b45309"/>
+                            <stop offset="100%" stop-color="#451a03"/>
+                        </linearGradient>
+
+                        <!-- Gradientes de llama realista -->
+                        <radialGradient id="flameHaloGrad" cx="50%" cy="50%" r="50%">
+                            <stop offset="0%" stop-color="#fef08a" stop-opacity="0.88"/>
+                            <stop offset="35%" stop-color="#f59e0b" stop-opacity="0.38"/>
+                            <stop offset="70%" stop-color="#ea580c" stop-opacity="0.10"/>
+                            <stop offset="100%" stop-color="#ea580c" stop-opacity="0"/>
+                        </radialGradient>
+
+                        <linearGradient id="flameOuterGrad" x1="50%" y1="100%" x2="50%" y2="0%">
+                            <stop offset="0%" stop-color="#c2410c"/>
+                            <stop offset="32%" stop-color="#f59e0b"/>
+                            <stop offset="72%" stop-color="#fde047"/>
+                            <stop offset="100%" stop-color="#fefce8"/>
+                        </linearGradient>
+
+                        <linearGradient id="flameInnerGrad" x1="50%" y1="100%" x2="50%" y2="0%">
+                            <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.85"/>
+                            <stop offset="30%" stop-color="#fef9c3"/>
+                            <stop offset="100%" stop-color="#ffffff"/>
+                        </linearGradient>
+
+                        <!-- Gradiente para frutos rojos naturales -->
+                        <radialGradient id="berryGrad" cx="35%" cy="30%" r="65%">
+                            <stop offset="0%" stop-color="#fca5a5"/>
+                            <stop offset="35%" stop-color="#dc2626"/>
+                            <stop offset="85%" stop-color="#7f1d1d"/>
+                            <stop offset="100%" stop-color="#450a0a"/>
+                        </radialGradient>
+
+                        <!-- Gradiente para detalles dorados sutiles -->
+                        <linearGradient id="goldRibbon" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#fef08a"/>
+                            <stop offset="50%" stop-color="#d97706"/>
+                            <stop offset="100%" stop-color="#92400e"/>
+                        </linearGradient>
+
+                        <!-- Filtro de resplandor suave -->
+                        <filter id="softGlow" x="-40%" y="-40%" width="180%" height="180%">
+                            <feGaussianBlur stdDeviation="5" result="blur"/>
+                            <feMerge>
+                                <feMergeNode in="blur"/>
+                                <feMergeNode in="SourceGraphic"/>
+                            </feMerge>
+                        </filter>
+                    </defs>
+
+                    <!-- Sombra proyectada sobre la superficie -->
+                    <ellipse cx="450" cy="378" rx="345" ry="74" fill="url(#tableShadow)"/>
+
+                    <!-- Resplandor cálido que crece sobre la corona al encender velas -->
+                    <ellipse id="wreathWarmHalo" cx="450" cy="270" rx="355" ry="155" fill="url(#wreathGlow)" opacity="0" style="transition: opacity 1.2s ease;"/>
+
+                    <!-- Estrella sutil de luz que aparece al encender las 4 velas -->
+                    <g id="completionStar" class="completion-star" transform="translate(450, 62)">
+                        <circle r="38" fill="url(#flameHaloGrad)" opacity="0.65"/>
+                        <path d="M0 -30 L4 -6 L24 0 L4 6 L0 30 L-4 6 L-24 0 L-4 -6 Z" fill="#fef3c7" filter="url(#softGlow)"/>
+                        <path d="M0 -18 L2.5 -3 L14 0 L2.5 3 L0 18 L-2.5 3 L-14 0 L-2.5 -3 Z" fill="#ffffff"/>
+                    </g>
+
+                    <!-- Capa trasera de ramas de pino -->
+                    <g id="wreathBackFoliage"></g>
+
+                    <!-- Velas traseras (2 y 3) -->
+                    <g id="backCandlesLayer"></g>
+
+                    <!-- Capa delantera de ramas de pino, frutos rojos y detalles naturales -->
+                    <g id="wreathFrontFoliage"></g>
+                    <g id="wreathDecorations"></g>
+
+                    <!-- Velas delanteras (1 y 4) -->
+                    <g id="frontCandlesLayer"></g>
+
+                    <!-- Etiquetas discretas debajo de cada vela -->
+                    <g id="candleLabelsLayer"></g>
+                </svg>
+            </div>
+
+            <!-- Tarjeta especial de bendición final (se muestra cuando las 4 velas están encendidas) -->
+            <div id="completionCard" class="completion-card hidden content-fade">
+                <div class="completion-header">
+                    <span class="completion-star-icon">✦</span>
+                    <span class="completion-label">Las cuatro velas están encendidas</span>
+                    <span class="completion-star-icon">✦</span>
+                </div>
+                <p class="completion-message">
+                    «Que la luz de Cristo ilumine nuestra vida y nos inspire a ser esperanza, paz, alegría y amor para los demás».
+                </p>
+            </div>
+        </main>
+
+        <!-- Barra inferior de progreso de las 4 semanas -->
+        <footer class="app-footer">
+            <div class="progress-card">
+                <div class="progress-meta">
+                    <span class="progress-title">Progreso del camino de Adviento</span>
+                    <div class="progress-counters">
+                        <span id="litCountText" class="lit-count-text">0 de 4 velas encendidas</span>
+                        <span class="counter-divider">|</span>
+                        <span id="commitmentCountText" class="commitment-count-text">0 compromisos vividos</span>
+                    </div>
+                </div>
+
+                <!-- Línea de progreso conectada -->
+                <div class="progress-track-wrapper">
+                    <div class="progress-track">
+                        <div id="progressBarFill" class="progress-fill"></div>
+                    </div>
+
+                    <!-- 4 botones de semana en la barra de progreso -->
+                    <div id="progressSteps" class="progress-steps">
+                        <!-- Generado por JS -->
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Modal elegante de Reflexión, Oración y Compromiso -->
+    <div id="reflectionModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <div class="modal-card">
+
+            <!-- Barra superior de acento según el color de la vela -->
+            <div id="modalTopAccent" class="modal-accent"></div>
+
+            <!-- Cabecera del modal -->
+            <div class="modal-header">
+                <div class="modal-header-left">
+                    <!-- Indicador de llama encendida -->
+                    <div id="modalCandleBadge" class="modal-candle-badge">
+                        <svg class="modal-badge-svg" viewBox="0 0 24 24" fill="none">
+                            <path d="M12 2C12 2 8.5 6.5 8.5 10C8.5 11.93 10.07 13.5 12 13.5C13.93 13.5 15.5 11.93 15.5 10C15.5 6.5 12 2 12 2Z" fill="#fde047"/>
+                            <path d="M12 6.5C12 6.5 10.3 8.8 10.3 10.5C10.3 11.44 11.06 12.2 12 12.2C12.94 12.2 13.7 11.44 13.7 10.5C13.7 8.8 12 6.5 12 6.5Z" fill="#ffffff"/>
+                            <rect x="9" y="14.5" width="6" height="7.5" rx="1.5" id="modalBadgeWax" fill="#7c3aed"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <p id="modalSubtitle" class="modal-subtitle">Primer domingo de Adviento</p>
+                        <h2 id="modalTitle" class="modal-title">Primera vela – La esperanza</h2>
+                    </div>
+                </div>
+
+                <button id="closeModalBtn" type="button" aria-label="Cerrar ventana y volver a la corona" class="modal-close-btn">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Cuerpo scrolleable con el contenido espiritual -->
+            <div id="modalBody" class="modal-body custom-scroll">
+
+                <!-- Reflexión espiritual -->
+                <section>
+                    <h3 class="section-heading amber">
+                        <span class="heading-dot amber"></span>
+                        Reflexión espiritual
+                    </h3>
+                    <p id="modalReflection" class="modal-text"></p>
+                </section>
+
+                <!-- Oración -->
+                <section class="prayer-box">
+                    <div class="prayer-header">
+                        <h3 class="section-heading gold">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v18m-6-9h12"></path>
+                            </svg>
+                            Oración
+                        </h3>
+                        <span class="prayer-note">Personal o en comunidad</span>
+                    </div>
+                    <p id="modalPrayer" class="prayer-text"></p>
+                </section>
+
+                <!-- Pregunta para la reflexión personal -->
+                <section class="question-box">
+                    <h3 class="section-heading purple">
+                        <span class="heading-dot purple"></span>
+                        Para la reflexión personal
+                    </h3>
+                    <p id="modalQuestion" class="question-text"></p>
+                </section>
+
+                <!-- Compromiso concreto de la semana -->
+                <section class="commitment-box">
+                    <div class="commitment-layout">
+                        <div class="commitment-info">
+                            <h3 class="section-heading amber">
+                                <span class="heading-dot emerald"></span>
+                                Compromiso de la semana
+                            </h3>
+                            <p id="modalCommitment" class="modal-text"></p>
+                        </div>
+
+                        <!-- Botón interactivo "Mi compromiso" -->
+                        <button id="commitmentToggleBtn" type="button" class="commitment-btn">
+                            <svg id="commitmentCheckIcon" class="check-icon" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span id="commitmentBtnLabel">Mi compromiso</span>
+                        </button>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Pie del modal: Navegación entre semanas y botón para regresar a la corona -->
+            <div class="modal-footer">
+                <button id="prevWeekBtn" type="button" class="nav-btn">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                    <span>Anterior</span>
+                </button>
+
+                <button id="returnWreathBtn" type="button" class="primary-btn">
+                    <span>Volver a la corona</span>
+                </button>
+
+                <button id="nextWeekBtn" type="button" class="nav-btn">
+                    <span>Siguiente</span>
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal discreto de confirmación para reiniciar (sin usar alert/confirm) -->
+    <div id="resetConfirmModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="resetDialogTitle">
+        <div class="modal-card reset-modal-card">
+            <div class="reset-icon-wrap">
+                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                </svg>
+            </div>
+            <h3 id="resetDialogTitle" class="reset-title">¿Reiniciar el camino de Adviento?</h3>
+            <p class="reset-desc">
+                Se apagarán las velas encendidas y se reiniciará el registro de tus compromisos semanales para comenzar de nuevo.
+            </p>
+            <div class="reset-actions">
+                <button id="cancelResetBtn" type="button" class="nav-btn">
+                    Cancelar
+                </button>
+                <button id="confirmResetBtn" type="button" class="primary-btn">
+                    Sí, reiniciar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /**
+         * =========================================================================
+         * ADVIENTO: ENCENDAMOS LA ESPERANZA
+         * Lógica interactiva, generación orgánica de la corona y síntesis sonora
+         * =========================================================================
+         */
+
+        // Datos litúrgicos y espirituales de las cuatro velas
+        const ADVENT_WEEKS = [
+            {
+                id: 0,
+                roman: 'I',
+                shortName: 'La esperanza',
+                title: 'Primera vela – La esperanza',
+                subtitle: 'Primer domingo de Adviento',
+                colorType: 'purple',
+                accentHex: '#7c3aed',
+                reflection: 'El Adviento nos invita a despertar el corazón y reconocer que Dios continúa llegando a nuestra vida. Incluso en medio de las dificultades, la esperanza nos recuerda que siempre es posible comenzar de nuevo.',
+                prayer: 'Señor Jesús, enciende en nosotros la luz de la esperanza. Ayúdanos a confiar en tus promesas y a reconocer tu presencia en nuestra vida cotidiana. Amén.',
+                question: '¿Qué necesito despertar o renovar en mi vida para recibir a Jesús?',
+                commitment: 'Dedicar cinco minutos diarios al silencio y reconocer un motivo de esperanza.',
+                x: 245,
+                y: 282,
+                height: 118,
+                width: 44,
+                layer: 'front'
+            },
+            {
+                id: 1,
+                roman: 'II',
+                shortName: 'La paz',
+                title: 'Segunda vela – La paz',
+                subtitle: 'Segundo domingo de Adviento',
+                colorType: 'purple',
+                accentHex: '#7c3aed',
+                reflection: 'Preparar el camino del Señor significa transformar nuestras actitudes, reconciliarnos y construir relaciones más fraternas. La paz comienza en nuestro corazón y se hace visible en la manera como tratamos a los demás.',
+                prayer: 'Señor Jesús, transforma nuestro corazón y haznos instrumentos de tu paz. Enséñanos a perdonar, escuchar y construir caminos de reconciliación. Amén.',
+                question: '¿Con quién necesito reconciliarme o qué actitud debo cambiar para construir paz?',
+                commitment: 'Tener un gesto concreto de reconciliación, escucha o perdón.',
+                x: 372,
+                y: 222,
+                height: 122,
+                width: 42,
+                layer: 'back'
+            },
+            {
+                id: 2,
+                roman: 'III',
+                shortName: 'La alegría',
+                title: 'Tercera vela – La alegría',
+                subtitle: 'Tercer domingo de Adviento – Gaudete',
+                colorType: 'rose',
+                accentHex: '#ec4899',
+                reflection: 'La verdadera alegría nace de reconocer que Dios está cerca. No depende de que todo sea perfecto, sino de descubrir su amor en los pequeños acontecimientos y compartirlo con quienes nos rodean.',
+                prayer: 'Señor Jesús, llena nuestro corazón de una alegría profunda y generosa. Que sepamos transmitir esperanza, gratitud y amor a quienes encontramos cada día. Amén.',
+                question: '¿De qué manera puedo llevar alegría a alguien que está atravesando un momento difícil?',
+                commitment: 'Realizar una acción de servicio que lleve alegría a otra persona, sin esperar nada a cambio.',
+                x: 528,
+                y: 222,
+                height: 122,
+                width: 42,
+                layer: 'back'
+            },
+            {
+                id: 3,
+                roman: 'IV',
+                shortName: 'El amor',
+                title: 'Cuarta vela – El amor',
+                subtitle: 'Cuarto domingo de Adviento',
+                colorType: 'purple',
+                accentHex: '#7c3aed',
+                reflection: 'La Navidad nos recuerda que Dios se hace cercano y habita entre nosotros. Prepararnos para su nacimiento significa abrir el corazón, acoger a los demás y convertir el amor en gestos concretos.',
+                prayer: 'Señor Jesús, prepara nuestro corazón para recibirte. Que, siguiendo el ejemplo de María y José, aprendamos a confiar, acoger y amar con generosidad. Amén.',
+                question: '¿Qué lugar estoy dispuesto a darle a Jesús en mi vida y cómo puedo demostrar su amor a los demás?',
+                commitment: 'Compartir tiempo de calidad con alguien que necesite compañía, atención o cariño.',
+                x: 655,
+                y: 282,
+                height: 118,
+                width: 44,
+                layer: 'front'
+            }
+        ];
+
+        // Estado de la aplicación (comienza con todas las velas apagadas)
+        const state = {
+            litCandles: [false, false, false, false],
+            commitmentsDone: [false, false, false, false],
+            activeWeekIndex: null,
+            soundEnabled: true,
+            celebrationTriggered: false
+        };
+
+        // Referencias al DOM
+        const stageEl = document.getElementById('stage');
+        const ambientWarmthEl = document.getElementById('ambientWarmth');
+        const wreathWarmHaloEl = document.getElementById('wreathWarmHalo');
+        const guideBannerEl = document.getElementById('guideBanner');
+        const guideTextEl = document.getElementById('guideText');
+        const completionCardEl = document.getElementById('completionCard');
+        const progressBarFillEl = document.getElementById('progressBarFill');
+        const progressStepsEl = document.getElementById('progressSteps');
+        const litCountTextEl = document.getElementById('litCountText');
+        const commitmentCountTextEl = document.getElementById('commitmentCountText');
+
+        // Referencias del modal de reflexión
+        const reflectionModalEl = document.getElementById('reflectionModal');
+        const modalTopAccentEl = document.getElementById('modalTopAccent');
+        const modalCandleBadgeEl = document.getElementById('modalCandleBadge');
+        const modalBadgeWaxEl = document.getElementById('modalBadgeWax');
+        const modalSubtitleEl = document.getElementById('modalSubtitle');
+        const modalTitleEl = document.getElementById('modalTitle');
+        const modalReflectionEl = document.getElementById('modalReflection');
+        const modalPrayerEl = document.getElementById('modalPrayer');
+        const modalQuestionEl = document.getElementById('modalQuestion');
+        const modalCommitmentEl = document.getElementById('modalCommitment');
+        const modalBodyEl = document.getElementById('modalBody');
+        const commitmentToggleBtn = document.getElementById('commitmentToggleBtn');
+        const commitmentBtnLabel = document.getElementById('commitmentBtnLabel');
+        const prevWeekBtn = document.getElementById('prevWeekBtn');
+        const nextWeekBtn = document.getElementById('nextWeekBtn');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const returnWreathBtn = document.getElementById('returnWreathBtn');
+
+        // Referencias de reinicio y sonido
+        const resetBtn = document.getElementById('resetBtn');
+        const resetConfirmModal = document.getElementById('resetConfirmModal');
+        const cancelResetBtn = document.getElementById('cancelResetBtn');
+        const confirmResetBtn = document.getElementById('confirmResetBtn');
+        const soundToggleBtn = document.getElementById('soundToggleBtn');
+        const soundIconOn = document.getElementById('soundIconOn');
+        const soundIconOff = document.getElementById('soundIconOff');
+
+        /**
+         * Síntesis de sonidos contemplativos suaves mediante Web Audio API
+         */
+        let audioCtx = null;
+
+        function playContemplativeChime(frequencies = [523.25, 659.25], duration = 2.2) {
+            if (!state.soundEnabled) return;
+            try {
+                if (!audioCtx) {
+                    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                    audioCtx = new AudioContextClass();
+                }
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+                const now = audioCtx.currentTime;
+
+                frequencies.forEach((freq, idx) => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(freq, now + idx * 0.12);
+
+                    gain.gain.setValueAtTime(0.0001, now + idx * 0.12);
+                    gain.gain.exponentialRampToValueAtTime(0.065, now + idx * 0.12 + 0.08);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, now + idx * 0.12 + duration);
+
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now + idx * 0.12);
+                    osc.stop(now + idx * 0.12 + duration + 0.05);
+                });
+            } catch (err) {
+                // Ignorar silenciosamente si el navegador bloquea la reproducción automática
+            }
+        }
+
+        /**
+         * Generación SVG procedural y realista de la Corona de Adviento
+         */
+        function createSvgEl(tag, attrs = {}) {
+            const el = document.createElementNS('http://www.w3.org/2000/svg', tag);
+            Object.entries(attrs).forEach(([k, v]) => el.setAttribute(k, v));
+            return el;
+        }
+
+        function buildWreathGeometry() {
+            const backFoliage = document.getElementById('wreathBackFoliage');
+            const frontFoliage = document.getElementById('wreathFrontFoliage');
+            const decorations = document.getElementById('wreathDecorations');
+            const backCandles = document.getElementById('backCandlesLayer');
+            const frontCandles = document.getElementById('frontCandlesLayer');
+            const labelsLayer = document.getElementById('candleLabelsLayer');
+
+            const cx = 450;
+            const cy = 288;
+            const rx = 252;
+            const ry = 82;
+
+            const pineTones = ['#0b2e1e', '#11422b', '#175437', '#1e6643', '#26774f', '#143d29'];
+
+            // Base oscura interna para dar volumen tridimensional
+            backFoliage.appendChild(createSvgEl('ellipse', {
+                cx, cy: cy + 4, rx, ry,
+                fill: 'none',
+                stroke: '#071f14',
+                'stroke-width': '58',
+                opacity: '0.92'
+            }));
+
+            function addPineSprig(targetGroup, angle, radiusOffsetX, radiusOffsetY, scale, color) {
+                const rad = (angle * Math.PI) / 180;
+                const x = cx + (rx + radiusOffsetX) * Math.cos(rad);
+                const y = cy + (ry + radiusOffsetY) * Math.sin(rad);
+
+                const tx = -rx * Math.sin(rad);
+                const ty = ry * Math.cos(rad);
+                const tangentDeg = (Math.atan2(ty, tx) * 180) / Math.PI;
+
+                const g = createSvgEl('g', {
+                    transform: `translate(${x.toFixed(1)}, ${y.toFixed(1)}) rotate(${(tangentDeg + (Math.sin(angle * 3) * 14)).toFixed(1)}) scale(${scale})`
+                });
+
+                g.appendChild(createSvgEl('line', {
+                    x1: -22, y1: 0, x2: 24, y2: 0,
+                    stroke: '#2d2418',
+                    'stroke-width': '1.6',
+                    'stroke-linecap': 'round'
+                }));
+
+                for (let i = -20; i <= 20; i += 4.5) {
+                    const len = 14 + Math.sin((i + 20) * 0.14) * 7;
+                    g.appendChild(createSvgEl('line', {
+                        x1: i, y1: 0, x2: i + 7, y2: -len,
+                        stroke: color,
+                        'stroke-width': '1.9',
+                        'stroke-linecap': 'round'
+                    }));
+                    g.appendChild(createSvgEl('line', {
+                        x1: i, y1: 0, x2: i + 7, y2: len,
+                        stroke: color,
+                        'stroke-width': '1.9',
+                        'stroke-linecap': 'round'
+                    }));
+                }
+
+                targetGroup.appendChild(g);
+            }
+
+            // 108 ramas de pino en capas traseras y frontales
+            for (let i = 0; i < 108; i++) {
+                const angle = (i / 108) * 360;
+                const isBack = angle >= 185 && angle <= 355;
+                const target = isBack ? backFoliage : frontFoliage;
+
+                const seed = Math.sin(i * 12.9898) * 43758.5453;
+                const pseudoRand = seed - Math.floor(seed);
+
+                const rOffX = (pseudoRand - 0.5) * 34;
+                const rOffY = Math.cos(i * 2.7) * 15;
+                const scale = (isBack ? 0.85 : 1.05) + pseudoRand * 0.35;
+                const color = pineTones[i % pineTones.length];
+
+                addPineSprig(target, angle, rOffX, rOffY, scale, color);
+            }
+
+            // Hojas frontales con tono más luminoso
+            for (let i = 0; i < 34; i++) {
+                const angle = 10 + (i / 34) * 165;
+                addPineSprig(frontFoliage, angle, Math.sin(i * 4) * 18, Math.cos(i * 3) * 10 + 6, 0.82, '#2d8a5c');
+            }
+
+            // Racimos de frutos rojos naturales
+            const berryClusters = [
+                { angle: 28, rOff: 8 },
+                { angle: 74, rOff: 12 },
+                { angle: 118, rOff: 10 },
+                { angle: 158, rOff: 8 },
+                { angle: 205, rOff: -6 },
+                { angle: 268, rOff: -10 },
+                { angle: 332, rOff: -6 }
+            ];
+
+            berryClusters.forEach((cluster) => {
+                const rad = (cluster.angle * Math.PI) / 180;
+                const bx = cx + (rx + cluster.rOff) * Math.cos(rad);
+                const by = cy + (ry + cluster.rOff * 0.45) * Math.sin(rad);
+
+                const offsets = [
+                    { dx: 0, dy: 0, r: 5.5 },
+                    { dx: 7, dy: 3, r: 4.8 },
+                    { dx: -6, dy: 4, r: 4.6 }
+                ];
+
+                offsets.forEach(o => {
+                    decorations.appendChild(createSvgEl('circle', {
+                        cx: (bx + o.dx).toFixed(1),
+                        cy: (by + o.dy).toFixed(1),
+                        r: o.r,
+                        fill: 'url(#berryGrad)'
+                    }));
+                    decorations.appendChild(createSvgEl('circle', {
+                        cx: (bx + o.dx - 1.5).toFixed(1),
+                        cy: (by + o.dy - 1.6).toFixed(1),
+                        r: 1.3,
+                        fill: '#ffffff',
+                        opacity: '0.65'
+                    }));
+                });
+            });
+
+            // Pequeños detalles dorados sobrios
+            [48, 96, 138, 232, 305].forEach(angle => {
+                const rad = (angle * Math.PI) / 180;
+                const gx = cx + (rx + 4) * Math.cos(rad);
+                const gy = cy + (ry + 3) * Math.sin(rad);
+                decorations.appendChild(createSvgEl('circle', {
+                    cx: gx.toFixed(1),
+                    cy: gy.toFixed(1),
+                    r: 3.4,
+                    fill: 'url(#goldRibbon)',
+                    opacity: '0.85'
+                }));
+            });
+
+            // Construir las 4 velas interactivas
+            ADVENT_WEEKS.forEach((week) => {
+                const targetLayer = week.layer === 'back' ? backCandles : frontCandles;
+                const isRose = week.colorType === 'rose';
+                const bodyFill = isRose ? 'url(#roseCandleBody)' : 'url(#purpleCandleBody)';
+                const topFill = isRose ? 'url(#roseCandleTop)' : 'url(#purpleCandleTop)';
+
+                const candleG = createSvgEl('g', {
+                    id: `candle-${week.id}`,
+                    class: 'candle-unit',
+                    tabindex: '0',
+                    role: 'button',
+                    'aria-label': `Encender o ver reflexión de ${week.title}`
+                });
+
+                const x = week.x;
+                const baseY = week.y;
+                const w = week.width;
+                const h = week.height;
+                const topY = baseY - h;
+
+                // Área táctil generosa para escritorio y celular
+                candleG.appendChild(createSvgEl('rect', {
+                    x: x - w * 0.95,
+                    y: topY - 68,
+                    width: w * 1.9,
+                    height: h + 95,
+                    fill: 'transparent'
+                }));
+
+                // Anillo de foco/hover
+                candleG.appendChild(createSvgEl('ellipse', {
+                    class: 'candle-hover-ring',
+                    cx: x,
+                    cy: baseY + 6,
+                    rx: w * 0.92,
+                    ry: 13,
+                    fill: 'none',
+                    stroke: '#fde68a',
+                    'stroke-width': '1.8',
+                    'stroke-dasharray': '4 4'
+                }));
+
+                // Portavelas de latón dorado
+                candleG.appendChild(createSvgEl('ellipse', {
+                    cx: x, cy: baseY + 4, rx: w * 0.68, ry: 9.5,
+                    fill: 'url(#brassHolder)',
+                    stroke: '#451a03',
+                    'stroke-width': '0.8'
+                }));
+                candleG.appendChild(createSvgEl('ellipse', {
+                    cx: x, cy: baseY + 1, rx: w * 0.56, ry: 6.5,
+                    fill: '#1e1b2e',
+                    opacity: '0.55'
+                }));
+
+                // Cuerpo cilíndrico
+                candleG.appendChild(createSvgEl('path', {
+                    d: `M ${x - w / 2} ${topY} L ${x - w / 2} ${baseY} A ${w / 2} 7.5 0 0 0 ${x + w / 2} ${baseY} L ${x + w / 2} ${topY} Z`,
+                    fill: bodyFill
+                }));
+
+                // Sutil reflejo de cera en el borde superior
+                candleG.appendChild(createSvgEl('path', {
+                    d: `M ${x - w * 0.34} ${topY + 4} Q ${x - w * 0.32} ${topY + 22} ${x - w * 0.22} ${topY + 18} Q ${x - w * 0.14} ${topY + 14} ${x - w * 0.12} ${topY + 6}`,
+                    fill: isRose ? '#f9a8d4' : '#a78bfa',
+                    opacity: '0.35'
+                }));
+
+                // Superficie superior elíptica
+                candleG.appendChild(createSvgEl('ellipse', {
+                    cx: x, cy: topY, rx: w / 2, ry: 7,
+                    fill: topFill
+                }));
+
+                // Brillo cálido en la cera superior al encenderse
+                candleG.appendChild(createSvgEl('ellipse', {
+                    class: 'wax-top-glow',
+                    cx: x, cy: topY, rx: w * 0.44, ry: 5.5,
+                    fill: '#fef08a',
+                    opacity: '0',
+                    style: 'transition: opacity 0.8s ease;'
+                }));
+
+                // Mecha
+                candleG.appendChild(createSvgEl('path', {
+                    d: `M ${x} ${topY} Q ${x + 1.5} ${topY - 7} ${x} ${topY - 12}`,
+                    stroke: '#1e1b18',
+                    'stroke-width': '2.2',
+                    'stroke-linecap': 'round',
+                    fill: 'none'
+                }));
+
+                // Llama realista
+                const flameGroup = createSvgEl('g', { class: 'flame-group' });
+
+                flameGroup.appendChild(createSvgEl('circle', {
+                    class: 'flame-halo',
+                    cx: x,
+                    cy: topY - 29,
+                    r: 48,
+                    fill: 'url(#flameHaloGrad)'
+                }));
+
+                flameGroup.appendChild(createSvgEl('path', {
+                    class: 'flame-outer',
+                    d: `M ${x} ${topY - 52}
+                        C ${x + 12} ${topY - 36}, ${x + 11} ${topY - 14}, ${x} ${topY - 10}
+                        C ${x - 11} ${topY - 14}, ${x - 12} ${topY - 36}, ${x} ${topY - 52} Z`,
+                    fill: 'url(#flameOuterGrad)',
+                    filter: 'url(#softGlow)'
+                }));
+
+                flameGroup.appendChild(createSvgEl('path', {
+                    class: 'flame-inner',
+                    d: `M ${x} ${topY - 34}
+                        C ${x + 5.5} ${topY - 24}, ${x + 5} ${topY - 13}, ${x} ${topY - 11}
+                        C ${x - 5} ${topY - 13}, ${x - 5.5} ${topY - 24}, ${x} ${topY - 34} Z`,
+                    fill: 'url(#flameInnerGrad)'
+                }));
+
+                candleG.appendChild(flameGroup);
+
+                candleG.addEventListener('click', () => handleCandleSelect(week.id));
+                candleG.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        handleCandleSelect(week.id);
+                    }
+                });
+
+                targetLayer.appendChild(candleG);
+
+                // Etiqueta discreta debajo de cada vela
+                const labelY = week.layer === 'front' ? baseY + 38 : baseY + 34;
+                const labelGroup = createSvgEl('g', {
+                    id: `candle-label-${week.id}`,
+                    class: 'candle-label-group',
+                    transform: `translate(${x}, ${labelY})`
+                });
+
+                labelGroup.appendChild(createSvgEl('rect', {
+                    x: -56, y: -13, width: 112, height: 24, rx: 12,
+                    fill: 'rgba(11, 16, 38, 0.78)',
+                    stroke: isRose ? 'rgba(244, 114, 182, 0.4)' : 'rgba(196, 181, 253, 0.3)',
+                    'stroke-width': '1'
+                }));
+
+                const textEl = createSvgEl('text', {
+                    x: 0, y: 3,
+                    'text-anchor': 'middle',
+                    fill: '#f1f5f9',
+                    'font-size': '11.5',
+                    'font-weight': '500',
+                    'font-family': 'Poppins, sans-serif'
+                });
+                textEl.textContent = `${week.roman} · ${week.shortName}`;
+                labelGroup.appendChild(textEl);
+
+                labelGroup.addEventListener('click', () => handleCandleSelect(week.id));
+                labelsLayer.appendChild(labelGroup);
+            });
+        }
+
+        /**
+         * Construir los 4 pasos interactivos en la barra inferior de progreso
+         */
+        function renderProgressSteps() {
+            progressStepsEl.innerHTML = '';
+
+            ADVENT_WEEKS.forEach((week, idx) => {
+                const isLit = state.litCandles[idx];
+                const isDone = state.commitmentsDone[idx];
+                const isRose = week.colorType === 'rose';
+
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = `progress-step${isLit ? ' is-lit' : ''}`;
+
+                btn.innerHTML = `
+                    <span class="step-dot ${isRose ? 'is-rose' : 'is-purple'}"></span>
+                    <span class="step-label">
+                        <span class="step-roman">${week.roman}. </span>${week.shortName}
+                    </span>
+                    ${isDone ? '<span class="step-check" title="Compromiso realizado">✓</span>' : ''}
+                `;
+
+                btn.addEventListener('click', () => handleCandleSelect(idx));
+                progressStepsEl.appendChild(btn);
+            });
+        }
+
+        /**
+         * Acción principal al seleccionar o encender una vela
+         */
+        function handleCandleSelect(index) {
+            const wasLit = state.litCandles[index];
+
+            if (!wasLit) {
+                state.litCandles[index] = true;
+                const notes = [
+                    [440, 554.37],
+                    [493.88, 659.25],
+                    [523.25, 659.25, 783.99],
+                    [587.33, 739.99, 880]
+                ];
+                playContemplativeChime(notes[index], 2.4);
+                burstSparkles(ADVENT_WEEKS[index].x, ADVENT_WEEKS[index].y - ADVENT_WEEKS[index].height - 25, 18);
+                updateVisualState();
+
+                setTimeout(() => {
+                    openReflectionModal(index);
+                }, 480);
+            } else {
+                openReflectionModal(index);
+            }
+        }
+
+        /**
+         * Actualiza iluminación, velas, barra de progreso y estado de culminación
+         */
+        function updateVisualState() {
+            const litCount = state.litCandles.filter(Boolean).length;
+            const commitmentCount = state.commitmentsDone.filter(Boolean).length;
+            const allLit = litCount === 4;
+
+            ADVENT_WEEKS.forEach((week, idx) => {
+                const candleEl = document.getElementById(`candle-${idx}`);
+                const labelEl = document.getElementById(`candle-label-${idx}`);
+                if (!candleEl) return;
+
+                const isLit = state.litCandles[idx];
+                candleEl.classList.toggle('is-lit', isLit);
+
+                const waxGlow = candleEl.querySelector('.wax-top-glow');
+                if (waxGlow) {
+                    waxGlow.setAttribute('opacity', isLit ? '0.62' : '0');
+                }
+
+                if (labelEl) {
+                    const rect = labelEl.querySelector('rect');
+                    const text = labelEl.querySelector('text');
+                    if (isLit) {
+                        rect.setAttribute('stroke', 'rgba(253, 224, 71, 0.72)');
+                        rect.setAttribute('fill', 'rgba(32, 22, 58, 0.9)');
+                        text.setAttribute('fill', '#fef3c7');
+                    } else {
+                        const isRose = week.colorType === 'rose';
+                        rect.setAttribute('stroke', isRose ? 'rgba(244, 114, 182, 0.4)' : 'rgba(196, 181, 253, 0.3)');
+                        rect.setAttribute('fill', 'rgba(11, 16, 38, 0.78)');
+                        text.setAttribute('fill', '#f1f5f9');
+                    }
+                }
+            });
+
+            const warmthIntensity = litCount === 0 ? 0 : (0.28 + litCount * 0.18);
+            ambientWarmthEl.style.opacity = warmthIntensity.toString();
+            ambientWarmthEl.style.transform = `scale(${0.88 + litCount * 0.04})`;
+            wreathWarmHaloEl.setAttribute('opacity', (litCount * 0.25).toFixed(2));
+
+            const progressPercent = (litCount / 4) * 100;
+            progressBarFillEl.style.width = `${progressPercent}%`;
+            litCountTextEl.textContent = `${litCount} de 4 ${litCount === 1 ? 'vela encendida' : 'velas encendidas'}`;
+            commitmentCountTextEl.textContent = `${commitmentCount} ${commitmentCount === 1 ? 'compromiso vivido' : 'compromisos vividos'}`;
+
+            stageEl.classList.toggle('all-lit', allLit);
+
+            if (allLit) {
+                guideBannerEl.classList.add('hidden');
+                completionCardEl.classList.remove('hidden');
+
+                if (!state.celebrationTriggered) {
+                    state.celebrationTriggered = true;
+                    setTimeout(() => {
+                        playContemplativeChime([523.25, 659.25, 783.99, 1046.5], 3.5);
+                        burstCelebrationSparkles();
+                    }, 350);
+                }
+            } else {
+                guideBannerEl.classList.remove('hidden');
+                completionCardEl.classList.add('hidden');
+                state.celebrationTriggered = false;
+
+                if (litCount === 0) {
+                    guideTextEl.textContent = 'Haz clic en una vela para encenderla y comenzar tu camino de Adviento';
+                } else {
+                    guideTextEl.textContent = 'Haz clic en la siguiente vela para continuar iluminando tu camino de Adviento';
+                }
+            }
+
+            renderProgressSteps();
+        }
+
+        /**
+         * Abrir y poblar la ventana de reflexión espiritual
+         */
+        function openReflectionModal(index) {
+            state.activeWeekIndex = index;
+            const week = ADVENT_WEEKS[index];
+            const isRose = week.colorType === 'rose';
+
+            if (!state.litCandles[index]) {
+                state.litCandles[index] = true;
+                playContemplativeChime([523.25, 659.25], 2.0);
+                updateVisualState();
+            }
+
+            modalTopAccentEl.classList.toggle('is-rose', isRose);
+            modalCandleBadgeEl.classList.toggle('is-rose', isRose);
+            modalBadgeWaxEl.setAttribute('fill', isRose ? '#ec4899' : '#7c3aed');
+
+            modalBodyEl.classList.remove('content-fade');
+            void modalBodyEl.offsetWidth;
+            modalBodyEl.classList.add('content-fade');
+
+            modalSubtitleEl.textContent = week.subtitle;
+            modalTitleEl.textContent = week.title;
+            modalReflectionEl.textContent = week.reflection;
+            modalPrayerEl.textContent = week.prayer;
+            modalQuestionEl.textContent = week.question;
+            modalCommitmentEl.textContent = week.commitment;
+
+            updateCommitmentButtonUI(index);
+
+            prevWeekBtn.disabled = index === 0;
+            nextWeekBtn.disabled = index === ADVENT_WEEKS.length - 1;
+
+            modalBodyEl.scrollTop = 0;
+            reflectionModalEl.classList.add('is-open');
+        }
+
+        function closeReflectionModal() {
+            reflectionModalEl.classList.remove('is-open');
+            state.activeWeekIndex = null;
+        }
+
+        /**
+         * Actualiza la apariencia del botón "Mi compromiso"
+         */
+        function updateCommitmentButtonUI(index) {
+            const isDone = state.commitmentsDone[index];
+            commitmentToggleBtn.classList.toggle('is-done', isDone);
+            commitmentBtnLabel.textContent = isDone ? 'Compromiso realizado' : 'Mi compromiso';
+        }
+
+        /**
+         * Reiniciar toda la experiencia
+         */
+        function resetExperience() {
+            state.litCandles = [false, false, false, false];
+            state.commitmentsDone = [false, false, false, false];
+            state.activeWeekIndex = null;
+            state.celebrationTriggered = false;
+            closeReflectionModal();
+            resetConfirmModal.classList.remove('is-open');
+            updateVisualState();
+        }
+
+        // Eventos de botones del modal y controles generales
+        closeModalBtn.addEventListener('click', closeReflectionModal);
+        returnWreathBtn.addEventListener('click', closeReflectionModal);
+
+        reflectionModalEl.addEventListener('click', (e) => {
+            if (e.target === reflectionModalEl) closeReflectionModal();
+        });
+
+        prevWeekBtn.addEventListener('click', () => {
+            if (state.activeWeekIndex > 0) {
+                openReflectionModal(state.activeWeekIndex - 1);
+            }
+        });
+
+        nextWeekBtn.addEventListener('click', () => {
+            if (state.activeWeekIndex < ADVENT_WEEKS.length - 1) {
+                openReflectionModal(state.activeWeekIndex + 1);
+            }
+        });
+
+        commitmentToggleBtn.addEventListener('click', () => {
+            if (state.activeWeekIndex === null) return;
+            const idx = state.activeWeekIndex;
+            state.commitmentsDone[idx] = !state.commitmentsDone[idx];
+            if (state.commitmentsDone[idx]) {
+                playContemplativeChime([587.33, 880], 1.5);
+            }
+            updateCommitmentButtonUI(idx);
+            updateVisualState();
+        });
+
+        // Controles de reinicio
+        resetBtn.addEventListener('click', () => {
+            resetConfirmModal.classList.add('is-open');
+        });
+        cancelResetBtn.addEventListener('click', () => {
+            resetConfirmModal.classList.remove('is-open');
+        });
+        confirmResetBtn.addEventListener('click', resetExperience);
+        resetConfirmModal.addEventListener('click', (e) => {
+            if (e.target === resetConfirmModal) resetConfirmModal.classList.remove('is-open');
+        });
+
+        // Control de sonido
+        soundToggleBtn.addEventListener('click', () => {
+            state.soundEnabled = !state.soundEnabled;
+            soundIconOn.classList.toggle('hidden', !state.soundEnabled);
+            soundIconOff.classList.toggle('hidden', state.soundEnabled);
+            if (state.soundEnabled) {
+                playContemplativeChime([523.25], 1.0);
+            }
+        });
+
+        // Tecla Escape para cerrar modales
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeReflectionModal();
+                resetConfirmModal.classList.remove('is-open');
+            }
+        });
+
+        /**
+         * =========================================================================
+         * SISTEMA DE PARTÍCULAS Y DESTELLOS CÁLIDOS (CANVAS RESPONSIVO)
+         * =========================================================================
+         */
+        const canvas = document.getElementById('particleCanvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let burstParticles = [];
+
+        function resizeCanvas() {
+            const rect = stageEl.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+        }
+
+        function initAmbientParticles() {
+            particles = [];
+            const count = 42;
+            for (let i = 0; i < count; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    r: Math.random() * 1.9 + 0.6,
+                    vx: (Math.random() - 0.5) * 0.22,
+                    vy: -(Math.random() * 0.28 + 0.08),
+                    alpha: Math.random() * 0.55 + 0.15,
+                    phase: Math.random() * Math.PI * 2
+                });
+            }
+        }
+
+        function burstSparkles(svgX, svgY, count) {
+            const svgEl = document.getElementById('wreathSvg');
+            const svgRect = svgEl.getBoundingClientRect();
+            const stageRect = stageEl.getBoundingClientRect();
+
+            const px = (svgRect.left - stageRect.left) + (svgX / 900) * svgRect.width;
+            const py = (svgRect.top - stageRect.top) + (svgY / 470) * svgRect.height;
+
+            for (let i = 0; i < count; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const speed = Math.random() * 1.8 + 0.5;
+                burstParticles.push({
+                    x: px,
+                    y: py,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed - 0.8,
+                    r: Math.random() * 2.4 + 1,
+                    life: 1,
+                    decay: Math.random() * 0.015 + 0.01
+                });
+            }
+        }
+
+        function burstCelebrationSparkles() {
+            for (let i = 0; i < 48; i++) {
+                burstParticles.push({
+                    x: canvas.width * (0.2 + Math.random() * 0.6),
+                    y: canvas.height * (0.35 + Math.random() * 0.35),
+                    vx: (Math.random() - 0.5) * 0.9,
+                    vy: -(Math.random() * 1.6 + 0.5),
+                    r: Math.random() * 2.8 + 1.2,
+                    life: 1,
+                    decay: Math.random() * 0.008 + 0.005
+                });
+            }
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const litCount = state.litCandles.filter(Boolean).length;
+            const glowBoost = 1 + litCount * 0.18;
+
+            particles.forEach(p => {
+                p.x += p.vx;
+                p.y += p.vy * (1 + litCount * 0.08);
+                p.phase += 0.025;
+
+                if (p.y < -10) {
+                    p.y = canvas.height + 10;
+                    p.x = Math.random() * canvas.width;
+                }
+                if (p.x < -10) p.x = canvas.width + 10;
+                if (p.x > canvas.width + 10) p.x = -10;
+
+                const twinkle = (Math.sin(p.phase) * 0.35 + 0.65) * p.alpha * glowBoost;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                ctx.fillStyle = litCount >= 3
+                    ? `rgba(253, 224, 130, ${Math.min(twinkle, 0.92)})`
+                    : `rgba(235, 215, 255, ${Math.min(twinkle, 0.78)})`;
+                ctx.fill();
+            });
+
+            for (let i = burstParticles.length - 1; i >= 0; i--) {
+                const b = burstParticles[i];
+                b.x += b.vx;
+                b.y += b.vy;
+                b.life -= b.decay;
+
+                if (b.life <= 0) {
+                    burstParticles.splice(i, 1);
+                    continue;
+                }
+
+                ctx.beginPath();
+                ctx.arc(b.x, b.y, b.r * b.life, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(254, 240, 138, ${b.life})`;
+                ctx.fill();
+            }
+
+            requestAnimationFrame(animateParticles);
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+
+        window.onload = function () {
+            buildWreathGeometry();
+            updateVisualState();
+            resizeCanvas();
+            initAmbientParticles();
+            animateParticles();
+        };
+    </script>
+</body>
+</html>
