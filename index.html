@@ -29,8 +29,6 @@
             --color-amber-200: #fde68a;
             --color-amber-300: #fcd34d;
             --color-amber-950: #451a03;
-            --color-emerald-200: #a7f3d0;
-            --color-emerald-300: #6ee7b7;
             --color-text-main: #f8fafc;
             --color-text-soft: #e2e8f0;
             --color-text-muted: #cbd5e1;
@@ -397,6 +395,21 @@
             filter: drop-shadow(0 0 16px rgba(251, 191, 36, 0.35));
         }
 
+        .candle-unit.is-locked {
+            opacity: 0.62;
+            cursor: not-allowed;
+        }
+
+        .candle-unit.is-locked:hover {
+            filter: none;
+        }
+
+        .candle-unit.is-locked:hover .candle-hover-ring,
+        .candle-unit.is-locked:focus-visible .candle-hover-ring {
+            opacity: 0.35;
+            stroke: rgba(203, 213, 225, 0.65);
+        }
+
         .completion-star {
             opacity: 0;
             transform-box: fill-box;
@@ -418,7 +431,7 @@
         }
 
         /* =====================================================================
-           BARRA INFERIOR DE PROGRESO (4 SEMANAS)
+           BARRA INFERIOR DE PROGRESO (4 DOMINGOS)
            ===================================================================== */
         .app-footer {
             position: relative;
@@ -453,28 +466,9 @@
             letter-spacing: 0.02em;
         }
 
-        .progress-counters {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
         .lit-count-text {
             color: var(--color-amber-200);
             font-weight: 500;
-        }
-
-        .counter-divider,
-        .commitment-count-text {
-            display: none;
-        }
-
-        .counter-divider {
-            color: rgba(255, 255, 255, 0.22);
-        }
-
-        .commitment-count-text {
-            color: rgba(110, 231, 183, 0.92);
         }
 
         .progress-track-wrapper {
@@ -542,6 +536,22 @@
             box-shadow: 0 0 15px rgba(251, 191, 36, 0.18);
         }
 
+        .progress-step.is-locked {
+            opacity: 0.65;
+            border-style: dashed;
+            border-color: rgba(255, 255, 255, 0.14);
+        }
+
+        .progress-step.is-locked:hover {
+            border-color: rgba(253, 230, 138, 0.28);
+        }
+
+        .step-date {
+            font-size: 0.625rem;
+            color: rgba(203, 213, 225, 0.72);
+            white-space: nowrap;
+        }
+
         .step-dot {
             width: 0.625rem;
             height: 0.625rem;
@@ -581,18 +591,8 @@
             color: var(--color-amber-100);
         }
 
-        .step-roman {
-            display: none;
-        }
-
-        .step-check {
-            font-size: 0.65rem;
-            color: var(--color-emerald-300);
-            font-weight: 600;
-        }
-
         /* =====================================================================
-           MODALES (REFLEXIÓN ESPIRITUAL Y CONFIRMACIÓN DE REINICIO)
+           MODALES (GUÍA LITÚRGICA Y CONFIRMACIÓN DE REINICIO)
            ===================================================================== */
         .modal-backdrop {
             position: fixed;
@@ -618,7 +618,7 @@
         .modal-card {
             position: relative;
             width: 100%;
-            max-width: 42rem;
+            max-width: 44rem;
             max-height: 90vh;
             display: flex;
             flex-direction: column;
@@ -697,7 +697,7 @@
 
         .modal-title {
             margin: 0.15rem 0 0;
-            font-size: 1.125rem;
+            font-size: 1.15rem;
             font-weight: 600;
             color: #ffffff;
             line-height: 1.35;
@@ -726,30 +726,56 @@
             padding: 1.25rem;
             display: flex;
             flex-direction: column;
-            gap: 1.25rem;
+            gap: 1rem;
         }
 
-        .section-heading {
-            margin: 0 0 0.5rem;
+        /* Estilos para el contenido litúrgico de cada domingo */
+        .liturgy-banner {
+            text-align: center;
+            padding: 0.6rem 1rem;
+            border-radius: 0.85rem;
+            background: rgba(252, 211, 77, 0.1);
+            border: 1px solid rgba(252, 211, 77, 0.28);
+            color: var(--color-amber-200);
+            font-size: 0.8125rem;
+            font-weight: 600;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+        }
+
+        .liturgy-section {
+            border-radius: 1rem;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.09);
+            padding: 1rem 1.15rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.55rem;
+        }
+
+        .liturgy-section.is-highlight {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.1) 0%, rgba(168, 85, 247, 0.09) 55%, rgba(255, 255, 255, 0.03) 100%);
+            border-color: rgba(253, 230, 138, 0.26);
+        }
+
+        .liturgy-heading {
+            margin: 0 0 0.15rem;
             display: flex;
             align-items: center;
             gap: 0.5rem;
             font-size: 0.75rem;
             text-transform: uppercase;
-            letter-spacing: 0.16em;
+            letter-spacing: 0.15em;
             font-weight: 600;
-        }
-
-        .section-heading.amber {
-            color: rgba(253, 230, 138, 0.85);
-        }
-
-        .section-heading.gold {
             color: var(--color-amber-300);
         }
 
-        .section-heading.purple {
-            color: rgba(233, 213, 255, 0.92);
+        .liturgy-subheading {
+            margin: 0.25rem 0 0;
+            font-size: 0.8125rem;
+            font-weight: 600;
+            color: var(--color-amber-200);
+            letter-spacing: 0.03em;
         }
 
         .heading-dot {
@@ -757,13 +783,11 @@
             height: 0.375rem;
             border-radius: 9999px;
             display: inline-block;
+            background-color: var(--color-amber-300);
+            flex-shrink: 0;
         }
 
-        .heading-dot.amber { background-color: var(--color-amber-300); }
-        .heading-dot.purple { background-color: #d8b4fe; }
-        .heading-dot.emerald { background-color: var(--color-emerald-300); }
-
-        .modal-text {
+        .liturgy-line {
             margin: 0;
             font-size: 0.875rem;
             color: rgba(241, 245, 249, 0.95);
@@ -771,114 +795,34 @@
             font-weight: 300;
         }
 
-        .prayer-box {
-            border-radius: 1rem;
-            background: linear-gradient(135deg, rgba(251, 191, 36, 0.09) 0%, rgba(168, 85, 247, 0.08) 55%, transparent 100%);
-            border: 1px solid rgba(253, 230, 138, 0.22);
-            padding: 1rem;
+        .liturgy-role {
+            color: var(--color-amber-200);
+            font-weight: 600;
         }
 
-        .prayer-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 0.5rem;
-            margin-bottom: 0.5rem;
+        .liturgy-role.is-all {
+            color: #e9d5ff;
         }
 
-        .prayer-header .section-heading {
-            margin-bottom: 0;
-        }
-
-        .prayer-note {
-            font-size: 0.6875rem;
-            color: rgba(254, 243, 199, 0.62);
-            font-style: italic;
-        }
-
-        .prayer-text {
+        .liturgy-rubric {
             margin: 0;
-            font-size: 0.875rem;
-            color: rgba(255, 251, 235, 0.95);
-            line-height: 1.68;
+            font-size: 0.8125rem;
+            color: rgba(203, 213, 225, 0.84);
             font-style: italic;
             font-weight: 300;
+            line-height: 1.55;
         }
 
-        .question-box {
-            border-radius: 1rem;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 1rem;
-        }
-
-        .question-text {
-            margin: 0;
+        .liturgy-reading {
+            margin: 0.15rem 0;
+            padding: 0.65rem 0.9rem;
+            border-left: 3px solid rgba(252, 211, 77, 0.6);
+            background: rgba(255, 255, 255, 0.035);
+            border-radius: 0 0.65rem 0.65rem 0;
             font-size: 0.875rem;
-            color: #ffffff;
-            font-weight: 500;
-            line-height: 1.6;
-        }
-
-        .commitment-box {
-            border-radius: 1rem;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(253, 230, 138, 0.2);
-            padding: 1rem;
-        }
-
-        .commitment-layout {
-            display: flex;
-            flex-direction: column;
-            gap: 0.85rem;
-        }
-
-        .commitment-info {
-            flex: 1;
-        }
-
-        .commitment-btn {
-            flex-shrink: 0;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            padding: 0.65rem 1rem;
-            border-radius: 0.75rem;
-            font-size: 0.8125rem;
-            font-weight: 500;
-            border: 1px solid rgba(252, 211, 77, 0.36);
-            background: rgba(252, 211, 77, 0.1);
-            color: var(--color-amber-100);
-            transition: all 0.3s ease;
-        }
-
-        .commitment-btn:hover {
-            background: rgba(252, 211, 77, 0.2);
-        }
-
-        .commitment-btn:focus-visible {
-            outline: 2px solid rgba(252, 211, 77, 0.6);
-            outline-offset: 2px;
-        }
-
-        .commitment-btn .check-icon {
-            width: 1rem;
-            height: 1rem;
-            opacity: 0.4;
-            transition: transform 0.3s ease, opacity 0.3s ease;
-        }
-
-        .commitment-btn.is-done {
-            background: rgba(16, 185, 129, 0.2);
-            border-color: rgba(52, 211, 153, 0.52);
-            color: var(--color-emerald-200);
-            box-shadow: 0 0 18px rgba(16, 185, 129, 0.22);
-        }
-
-        .commitment-btn.is-done .check-icon {
-            opacity: 1;
-            transform: scale(1.1);
+            color: #fffbeb;
+            line-height: 1.68;
+            font-weight: 300;
         }
 
         .modal-footer {
@@ -976,6 +920,82 @@
             gap: 0.75rem;
         }
 
+        /* Aviso flotante cuando una vela aún no está disponible por fecha */
+        .date-toast {
+            position: fixed;
+            left: 50%;
+            bottom: 1.5rem;
+            z-index: 60;
+            width: calc(100% - 2rem);
+            max-width: 30rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.85rem;
+            padding: 0.95rem 1.15rem;
+            border-radius: 1rem;
+            background: rgba(16, 20, 46, 0.96);
+            border: 1px solid rgba(252, 211, 77, 0.38);
+            box-shadow: 0 18px 45px rgba(0, 0, 0, 0.65), 0 0 25px rgba(251, 191, 36, 0.12);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            opacity: 0;
+            pointer-events: none;
+            transform: translate(-50%, 16px);
+            transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .date-toast.is-visible {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translate(-50%, 0);
+        }
+
+        .date-toast-icon {
+            flex-shrink: 0;
+            width: 2.25rem;
+            height: 2.25rem;
+            border-radius: 0.75rem;
+            background: rgba(251, 191, 36, 0.12);
+            border: 1px solid rgba(252, 211, 77, 0.28);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-amber-300);
+        }
+
+        .date-toast-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .date-toast-title {
+            margin: 0;
+            font-size: 0.8125rem;
+            font-weight: 600;
+            color: var(--color-amber-100);
+        }
+
+        .date-toast-desc {
+            margin: 0.2rem 0 0;
+            font-size: 0.75rem;
+            color: #cbd5e1;
+            line-height: 1.5;
+            font-weight: 300;
+        }
+
+        .date-toast-close {
+            flex-shrink: 0;
+            padding: 0.25rem;
+            border-radius: 0.5rem;
+            color: #94a3b8;
+            transition: color 0.2s ease, background-color 0.2s ease;
+        }
+
+        .date-toast-close:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.08);
+        }
+
         /* Transición suave al cambiar contenido */
         .content-fade {
             animation: fadeInContent 0.45s ease forwards;
@@ -1043,10 +1063,6 @@
             .progress-meta {
                 font-size: 0.75rem;
             }
-            .counter-divider,
-            .commitment-count-text {
-                display: inline;
-            }
             .progress-step {
                 flex-direction: row;
                 gap: 0.45rem;
@@ -1067,20 +1083,12 @@
             .modal-body {
                 padding: 1.35rem 1.75rem;
             }
-            .modal-text,
-            .prayer-text,
-            .question-text {
+            .liturgy-line,
+            .liturgy-reading {
                 font-size: 0.9375rem;
             }
-            .prayer-box,
-            .question-box,
-            .commitment-box {
-                padding: 1.25rem;
-            }
-            .commitment-layout {
-                flex-direction: row;
-                align-items: center;
-                justify-content: space-between;
+            .liturgy-section {
+                padding: 1.15rem 1.35rem;
             }
             .modal-footer {
                 padding: 1rem 1.75rem;
@@ -1088,12 +1096,6 @@
             .nav-btn,
             .primary-btn {
                 font-size: 0.875rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .step-roman {
-                display: inline;
             }
         }
 
@@ -1163,7 +1165,7 @@
             <!-- Mensaje guía -->
             <div id="guideBanner" class="guide-banner">
                 <p id="guideText" class="guide-pill">
-                    Haz clic en una vela para encenderla y comenzar tu camino de Adviento
+                    Haz clic en una vela para encenderla y abrir la oración del domingo
                 </p>
             </div>
 
@@ -1199,7 +1201,7 @@
                             <stop offset="100%" stop-color="#4c1d95"/>
                         </radialGradient>
 
-                        <!-- Gradientes de vela rosada - Gaudete (3D cilíndrico) -->
+                        <!-- Gradientes de vela rosada (3D cilíndrico) -->
                         <linearGradient id="roseCandleBody" x1="0%" y1="0%" x2="100%" y2="0%">
                             <stop offset="0%" stop-color="#7a1545"/>
                             <stop offset="28%" stop-color="#db2777"/>
@@ -1300,7 +1302,7 @@
                 </svg>
             </div>
 
-            <!-- Tarjeta especial de bendición final (se muestra cuando las 4 velas están encendidas) -->
+            <!-- Tarjeta especial cuando las 4 velas están encendidas -->
             <div id="completionCard" class="completion-card hidden content-fade">
                 <div class="completion-header">
                     <span class="completion-star-icon">✦</span>
@@ -1308,21 +1310,17 @@
                     <span class="completion-star-icon">✦</span>
                 </div>
                 <p class="completion-message">
-                    «Que la luz de Cristo ilumine nuestra vida y nos inspire a ser esperanza, paz, alegría y amor para los demás».
+                    «Ven, Señor, haz resplandecer tu rostro sobre nosotros. Y seremos salvos. Amén».
                 </p>
             </div>
         </main>
 
-        <!-- Barra inferior de progreso de las 4 semanas -->
+        <!-- Barra inferior de progreso de los 4 domingos -->
         <footer class="app-footer">
             <div class="progress-card">
                 <div class="progress-meta">
                     <span class="progress-title">Progreso del camino de Adviento</span>
-                    <div class="progress-counters">
-                        <span id="litCountText" class="lit-count-text">0 de 4 velas encendidas</span>
-                        <span class="counter-divider">|</span>
-                        <span id="commitmentCountText" class="commitment-count-text">0 compromisos vividos</span>
-                    </div>
+                    <span id="litCountText" class="lit-count-text">0 de 4 velas encendidas</span>
                 </div>
 
                 <!-- Línea de progreso conectada -->
@@ -1331,7 +1329,7 @@
                         <div id="progressBarFill" class="progress-fill"></div>
                     </div>
 
-                    <!-- 4 botones de semana en la barra de progreso -->
+                    <!-- 4 botones de domingo en la barra de progreso -->
                     <div id="progressSteps" class="progress-steps">
                         <!-- Generado por JS -->
                     </div>
@@ -1340,7 +1338,7 @@
         </footer>
     </div>
 
-    <!-- Modal elegante de Reflexión, Oración y Compromiso -->
+    <!-- Modal de Oración y Guía Litúrgica de cada Domingo -->
     <div id="reflectionModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
         <div class="modal-card">
 
@@ -1359,8 +1357,8 @@
                         </svg>
                     </div>
                     <div>
-                        <p id="modalSubtitle" class="modal-subtitle">Primer domingo de Adviento</p>
-                        <h2 id="modalTitle" class="modal-title">Primera vela – La esperanza</h2>
+                        <p id="modalSubtitle" class="modal-subtitle">29 de noviembre de 2026</p>
+                        <h2 id="modalTitle" class="modal-title">PRIMER DOMINGO</h2>
                     </div>
                 </div>
 
@@ -1371,64 +1369,12 @@
                 </button>
             </div>
 
-            <!-- Cuerpo scrolleable con el contenido espiritual -->
+            <!-- Cuerpo scrolleable con la guía litúrgica del domingo -->
             <div id="modalBody" class="modal-body custom-scroll">
-
-                <!-- Reflexión espiritual -->
-                <section>
-                    <h3 class="section-heading amber">
-                        <span class="heading-dot amber"></span>
-                        Reflexión espiritual
-                    </h3>
-                    <p id="modalReflection" class="modal-text"></p>
-                </section>
-
-                <!-- Oración -->
-                <section class="prayer-box">
-                    <div class="prayer-header">
-                        <h3 class="section-heading gold">
-                            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v18m-6-9h12"></path>
-                            </svg>
-                            Oración
-                        </h3>
-                        <span class="prayer-note">Personal o en comunidad</span>
-                    </div>
-                    <p id="modalPrayer" class="prayer-text"></p>
-                </section>
-
-                <!-- Pregunta para la reflexión personal -->
-                <section class="question-box">
-                    <h3 class="section-heading purple">
-                        <span class="heading-dot purple"></span>
-                        Para la reflexión personal
-                    </h3>
-                    <p id="modalQuestion" class="question-text"></p>
-                </section>
-
-                <!-- Compromiso concreto de la semana -->
-                <section class="commitment-box">
-                    <div class="commitment-layout">
-                        <div class="commitment-info">
-                            <h3 class="section-heading amber">
-                                <span class="heading-dot emerald"></span>
-                                Compromiso de la semana
-                            </h3>
-                            <p id="modalCommitment" class="modal-text"></p>
-                        </div>
-
-                        <!-- Botón interactivo "Mi compromiso" -->
-                        <button id="commitmentToggleBtn" type="button" class="commitment-btn">
-                            <svg id="commitmentCheckIcon" class="check-icon" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>
-                            </svg>
-                            <span id="commitmentBtnLabel">Mi compromiso</span>
-                        </button>
-                    </div>
-                </section>
+                <!-- Renderizado dinámicamente según el domingo seleccionado -->
             </div>
 
-            <!-- Pie del modal: Navegación entre semanas y botón para regresar a la corona -->
+            <!-- Pie del modal: Navegación entre domingos y botón para regresar a la corona -->
             <div class="modal-footer">
                 <button id="prevWeekBtn" type="button" class="nav-btn">
                     <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -1451,7 +1397,7 @@
         </div>
     </div>
 
-    <!-- Modal discreto de confirmación para reiniciar (sin usar alert/confirm) -->
+    <!-- Modal discreto de confirmación para reiniciar -->
     <div id="resetConfirmModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="resetDialogTitle">
         <div class="modal-card reset-modal-card">
             <div class="reset-icon-wrap">
@@ -1459,9 +1405,9 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
                 </svg>
             </div>
-            <h3 id="resetDialogTitle" class="reset-title">¿Reiniciar el camino de Adviento?</h3>
+            <h3 id="resetDialogTitle" class="reset-title">¿Reiniciar las velas encendidas?</h3>
             <p class="reset-desc">
-                Se apagarán las velas encendidas y se reiniciará el registro de tus compromisos semanales para comenzar de nuevo.
+                Se apagarán temporalmente las velas en esta sesión para que puedas encenderlas nuevamente.
             </p>
             <div class="reset-actions">
                 <button id="cancelResetBtn" type="button" class="nav-btn">
@@ -1474,28 +1420,89 @@
         </div>
     </div>
 
+    <!-- Aviso contemplativo para velas aún bloqueadas por fecha -->
+    <div id="dateToast" class="date-toast" role="status" aria-live="polite">
+        <div class="date-toast-icon" aria-hidden="true">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+            </svg>
+        </div>
+        <div class="date-toast-content">
+            <p id="dateToastTitle" class="date-toast-title">Esta vela espera su tiempo</p>
+            <p id="dateToastDesc" class="date-toast-desc"></p>
+        </div>
+        <button id="closeDateToastBtn" type="button" class="date-toast-close" aria-label="Cerrar aviso">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+        </button>
+    </div>
+
     <script>
         /**
          * =========================================================================
          * ADVIENTO: ENCENDAMOS LA ESPERANZA
-         * Lógica interactiva, generación orgánica de la corona y síntesis sonora
+         * Guía litúrgica de los cuatro domingos, corona interactiva y persistencia
          * =========================================================================
          */
 
-        // Datos litúrgicos y espirituales de las cuatro velas
+        const STORAGE_KEY = 'adviento_velas_encendidas_v1';
+
+        // Contenido exacto de cada domingo (fechas de Adviento 2026)
         const ADVENT_WEEKS = [
             {
                 id: 0,
                 roman: 'I',
-                shortName: 'La esperanza',
-                title: 'Primera vela – La esperanza',
-                subtitle: 'Primer domingo de Adviento',
+                shortName: '1.º Domingo',
+                title: 'PRIMER DOMINGO',
+                subtitle: 'Domingo 29 de noviembre de 2026',
+                unlockDate: new Date(2026, 10, 29, 0, 0, 0),
+                endDate: new Date(2026, 10, 30, 0, 0, 0),
+                unlockDateLabel: 'Domingo 29 de noviembre de 2026',
+                shortDate: '29 nov',
                 colorType: 'purple',
                 accentHex: '#7c3aed',
-                reflection: 'El Adviento nos invita a despertar el corazón y reconocer que Dios continúa llegando a nuestra vida. Incluso en medio de las dificultades, la esperanza nos recuerda que siempre es posible comenzar de nuevo.',
-                prayer: 'Señor Jesús, enciende en nosotros la luz de la esperanza. Ayúdanos a confiar en tus promesas y a reconocer tu presencia en nuestra vida cotidiana. Amén.',
-                question: '¿Qué necesito despertar o renovar en mi vida para recibir a Jesús?',
-                commitment: 'Dedicar cinco minutos diarios al silencio y reconocer un motivo de esperanza.',
+                contentHtml: `
+                    <div class="liturgy-banner">LLAMADA A LA VIGILANCIA</div>
+
+                    <section class="liturgy-section">
+                        <h3 class="liturgy-heading"><span class="heading-dot"></span>ENTRADA</h3>
+                        <p class="liturgy-rubric">Se entona algún canto.</p>
+                        <p class="liturgy-subheading">Saludo.</p>
+                        <p class="liturgy-line"><span class="liturgy-role">Guía:</span> En el nombre del Padre y del Hijo y del Espíritu Santo.</p>
+                        <p class="liturgy-subheading">Acto de Contrición.</p>
+                        <p class="liturgy-line"><span class="liturgy-role">Guía:</span> Reconozcamos ante Dios que somos pecadores.</p>
+                        <p class="liturgy-line"><span class="liturgy-role is-all">Todos:</span> Yo confieso ante Dios todopoderoso...</p>
+                    </section>
+
+                    <section class="liturgy-section">
+                        <h3 class="liturgy-heading"><span class="heading-dot"></span>LITURGIA DE LA PALABRA</h3>
+                        <p class="liturgy-reading">Lectura del santo evangelio según san Marcos 13,33: “Estén preparados y vigilando, ya que nos saben cual será el momento”. Palabra del Señor.</p>
+                        <p class="liturgy-rubric">(Breve pausa para meditar)</p>
+                        <p class="liturgy-subheading">Reflexión.</p>
+                        <p class="liturgy-line"><span class="liturgy-role">Guía:</span> Vigilar significa estar atentos, salir al encuentro del Señor, que quiere entrar, este año más que el pasado, en nuestra existencia, para darle sentido total y salvarnos.</p>
+                    </section>
+
+                    <section class="liturgy-section is-highlight">
+                        <h3 class="liturgy-heading"><span class="heading-dot"></span>ENCENDIDO DE LA VELA. Oración.</h3>
+                        <p class="liturgy-line"><span class="liturgy-role">Guía:</span> Encendemos, Señor, esta luz, como aquel que enciende su lámpara para salir, en la noche, al encuentro del amigo que ya viene. En esta primer semana de Adviento queremos levantarnos para esperarte preparados, para recibirte con alegría. Muchas sombras nos envuelven. Muchos halagos nos adormecen.</p>
+                        <p class="liturgy-line">Queremos estar despiertos y vigilantes, porque tú traes la luz más clara, la paz más profunda y la alegría más verdadera. ¡Ven, Señor Jesús!. ¡Ven, Señor Jesús!</p>
+                    </section>
+
+                    <section class="liturgy-section">
+                        <h3 class="liturgy-heading"><span class="heading-dot"></span>PADRE NUESTRO</h3>
+                        <p class="liturgy-line"><span class="liturgy-role">Guía:</span> Unidos en una sola voz digamos: Padre Nuestro...</p>
+                    </section>
+
+                    <section class="liturgy-section">
+                        <h3 class="liturgy-heading"><span class="heading-dot"></span>CONCLUSIÓN</h3>
+                        <p class="liturgy-line"><span class="liturgy-role">Guía:</span> Ven, Señor, haz resplandecer tu rostro sobre nosotros.</p>
+                        <p class="liturgy-line"><span class="liturgy-role is-all">Todos:</span> Y seremos salvos. Amén.</p>
+                    </section>
+                `,
                 x: 245,
                 y: 282,
                 height: 118,
@@ -1505,15 +1512,50 @@
             {
                 id: 1,
                 roman: 'II',
-                shortName: 'La paz',
-                title: 'Segunda vela – La paz',
-                subtitle: 'Segundo domingo de Adviento',
+                shortName: '2.º Domingo',
+                title: 'SEGUNDO DOMINGO',
+                subtitle: 'Domingo 6 de diciembre de 2026',
+                unlockDate: new Date(2026, 11, 6, 0, 0, 0),
+                endDate: new Date(2026, 11, 7, 0, 0, 0),
+                unlockDateLabel: 'Domingo 6 de diciembre de 2026',
+                shortDate: '6 dic',
                 colorType: 'purple',
                 accentHex: '#7c3aed',
-                reflection: 'Preparar el camino del Señor significa transformar nuestras actitudes, reconciliarnos y construir relaciones más fraternas. La paz comienza en nuestro corazón y se hace visible en la manera como tratamos a los demás.',
-                prayer: 'Señor Jesús, transforma nuestro corazón y haznos instrumentos de tu paz. Enséñanos a perdonar, escuchar y construir caminos de reconciliación. Amén.',
-                question: '¿Con quién necesito reconciliarme o qué actitud debo cambiar para construir paz?',
-                commitment: 'Tener un gesto concreto de reconciliación, escucha o perdón.',
+                contentHtml: `
+                    <section class="liturgy-section">
+                        <h3 class="liturgy-heading"><span class="heading-dot"></span>ENTRADA</h3>
+                        <p class="liturgy-rubric">Se entona algún canto.</p>
+                        <p class="liturgy-line"><span class="liturgy-role">Guía:</span> En el nombre del Padre y del Hijo y del Espíritu Santo.</p>
+                        <p class="liturgy-subheading">Acto de Contrición.</p>
+                        <p class="liturgy-line"><span class="liturgy-role">Guía:</span> Reconozcamos ante Dios que somos pecadores.</p>
+                        <p class="liturgy-line"><span class="liturgy-role is-all">Todos:</span> Yo confieso ante Dios todopoderoso...</p>
+                    </section>
+
+                    <section class="liturgy-section">
+                        <h3 class="liturgy-heading"><span class="heading-dot"></span>LITURGIA DE LA PALABRA</h3>
+                        <p class="liturgy-reading">Lectura de la II carta de San Pedro 3,13-14: ”Nosotros esperamos según la promesa de Dios cielos nuevos y tierra nueva, un mundo en que reinará la justicia. Por eso, queridos hermanos, durante esta espera, esfuércense para que Dios los halle sin mancha ni culpa, viviendo en paz". Palabra de Dios.</p>
+                        <p class="liturgy-rubric">Breve pausa para meditar</p>
+                        <p class="liturgy-subheading">Reflexión</p>
+                        <p class="liturgy-line"><span class="liturgy-role">Guía:</span> ¿Qué va a cambiar en mí, en nosotros en este Adviento? ¿Se notará que creemos de veras en Cristo?</p>
+                    </section>
+
+                    <section class="liturgy-section is-highlight">
+                        <h3 class="liturgy-heading"><span class="heading-dot"></span>ENCENDIDO DE LA VELA. Oración.</h3>
+                        <p class="liturgy-line"><span class="liturgy-role">Guía:</span> Los profetas mantenían encendida la esperanza de Israel. Nosotros, como un símbolo, encendemos estas dos velas. El viejo tronco está rebrotando se estremece porque Dios se ha sembrado en nuestra carne...</p>
+                        <p class="liturgy-line">Que cada uno de nosotros, Señor, te abra su vida para que brotes, para que florezcas, para que nazcas y mantengas en nuestro corazón encendida la esperanza. ¡Ven pronto, Señor! ¡Ven, Salvador!</p>
+                    </section>
+
+                    <section class="liturgy-section">
+                        <h3 class="liturgy-heading"><span class="heading-dot"></span>PADRE NUESTRO</h3>
+                        <p class="liturgy-line"><span class="liturgy-role">Guía:</span> Unidos en una sola voz digamos: Padre nuestro...</p>
+                    </section>
+
+                    <section class="liturgy-section">
+                        <h3 class="liturgy-heading"><span class="heading-dot"></span>CONCLUSIÓN</h3>
+                        <p class="liturgy-line"><span class="liturgy-role">Guía:</span> Ven, Señor, haz resplandecer tu rostro sobre nosotros.</p>
+                        <p class="liturgy-line"><span class="liturgy-role is-all">Todos:</span> Y seremos salvados. Amén.</p>
+                    </section>
+                `,
                 x: 372,
                 y: 222,
                 height: 122,
@@ -1523,15 +1565,50 @@
             {
                 id: 2,
                 roman: 'III',
-                shortName: 'La alegría',
-                title: 'Tercera vela – La alegría',
-                subtitle: 'Tercer domingo de Adviento – Gaudete',
+                shortName: '3.º Domingo',
+                title: 'TERCER DOMINGO',
+                subtitle: 'Domingo 13 de diciembre de 2026',
+                unlockDate: new Date(2026, 11, 13, 0, 0, 0),
+                endDate: new Date(2026, 11, 14, 0, 0, 0),
+                unlockDateLabel: 'Domingo 13 de diciembre de 2026',
+                shortDate: '13 dic',
                 colorType: 'rose',
                 accentHex: '#ec4899',
-                reflection: 'La verdadera alegría nace de reconocer que Dios está cerca. No depende de que todo sea perfecto, sino de descubrir su amor en los pequeños acontecimientos y compartirlo con quienes nos rodean.',
-                prayer: 'Señor Jesús, llena nuestro corazón de una alegría profunda y generosa. Que sepamos transmitir esperanza, gratitud y amor a quienes encontramos cada día. Amén.',
-                question: '¿De qué manera puedo llevar alegría a alguien que está atravesando un momento difícil?',
-                commitment: 'Realizar una acción de servicio que lleve alegría a otra persona, sin esperar nada a cambio.',
+                contentHtml: `
+                    <section class="liturgy-section">
+                        <h3 class="liturgy-heading"><span class="heading-dot"></span>ENTRADA</h3>
+                        <p class="liturgy-rubric">Se entona algún canto. Saludo.</p>
+                        <p class="liturgy-line"><span class="liturgy-role">Guía:</span> En el nombre del Padre y del Hijo Y del Espíritu Santo.</p>
+                        <p class="liturgy-subheading">Acto de Contrición.</p>
+                        <p class="liturgy-line"><span class="liturgy-role">Guía:</span> Reconozcamos ante Dios que somos pecadores.</p>
+                        <p class="liturgy-line"><span class="liturgy-role is-all">Todos:</span> Yo confieso ante Dios todopoderoso...</p>
+                    </section>
+
+                    <section class="liturgy-section">
+                        <h3 class="liturgy-heading"><span class="heading-dot"></span>LITURGIA DE LA PALABRA</h3>
+                        <p class="liturgy-reading">Lectura de la Primera carta a los Tesalonicenses 5,23: ”Que el propio Dios de la paz los santifique, llevándolos a la perfección. Guárdense enteramente, sin mancha, en todo su espíritu, su alma y su cuerpo, hasta la venida de Cristo Jesús, nuestro Señor”. Palabra de Dios.</p>
+                        <p class="liturgy-rubric">Breve pausa para meditar.</p>
+                        <p class="liturgy-subheading">Reflexión.</p>
+                        <p class="liturgy-line"><span class="liturgy-role">Guía:</span> Los hombres de hoy no verán en persona a Cristo en esta Navidad. Pero sí verán a la Iglesia, nos verán a nosotros. ¿Habrá más luz, más amor, más esperanza reflejada en nuestra vida para que puedan creer en El?</p>
+                    </section>
+
+                    <section class="liturgy-section is-highlight">
+                        <h3 class="liturgy-heading"><span class="heading-dot"></span>ENCENDIDO DE LA VELA. Oración.</h3>
+                        <p class="liturgy-line"><span class="liturgy-role">Guía:</span> En las tinieblas se encendió una luz, en el desierto clamó una voz. Se anuncia la buena noticia: ¡El Señor va a llegar! ¡Preparen sus caminos, porque ya se acerca! Adornen su alma como una novia se engalana el día de su boda. ¡Ya llega el mensajero!. Juan Bautista no es la luz, sino el que nos anuncia la luz.</p>
+                        <p class="liturgy-line">Cuando encendemos estas tres velas cada uno de nosotros quiere ser antorcha tuya para que brilles, llama para que calientes. ¡Ven, Señor, a salvarnos, envuélvenos en tu luz, caliéntanos en tu amor!</p>
+                    </section>
+
+                    <section class="liturgy-section">
+                        <h3 class="liturgy-heading"><span class="heading-dot"></span>PADRE NUESTRO</h3>
+                        <p class="liturgy-line"><span class="liturgy-role">Guía:</span> Unidos en una sola voz digamos: Padre nuestro...</p>
+                    </section>
+
+                    <section class="liturgy-section">
+                        <h3 class="liturgy-heading"><span class="heading-dot"></span>CONCLUSIÓN</h3>
+                        <p class="liturgy-line"><span class="liturgy-role">Guía:</span> Ven, Señor, haz resplandecer tu rostro sobre nosotros.</p>
+                        <p class="liturgy-line"><span class="liturgy-role is-all">Todos:</span> Y seremos salvados. Amén</p>
+                    </section>
+                `,
                 x: 528,
                 y: 222,
                 height: 122,
@@ -1541,15 +1618,60 @@
             {
                 id: 3,
                 roman: 'IV',
-                shortName: 'El amor',
-                title: 'Cuarta vela – El amor',
-                subtitle: 'Cuarto domingo de Adviento',
+                shortName: '4.º Domingo',
+                title: 'CUARTO DOMINGO',
+                subtitle: 'Domingo 20 de diciembre de 2026',
+                unlockDate: new Date(2026, 11, 20, 0, 0, 0),
+                endDate: new Date(2026, 11, 21, 0, 0, 0),
+                unlockDateLabel: 'Domingo 20 de diciembre de 2026',
+                shortDate: '20 dic',
                 colorType: 'purple',
                 accentHex: '#7c3aed',
-                reflection: 'La Navidad nos recuerda que Dios se hace cercano y habita entre nosotros. Prepararnos para su nacimiento significa abrir el corazón, acoger a los demás y convertir el amor en gestos concretos.',
-                prayer: 'Señor Jesús, prepara nuestro corazón para recibirte. Que, siguiendo el ejemplo de María y José, aprendamos a confiar, acoger y amar con generosidad. Amén.',
-                question: '¿Qué lugar estoy dispuesto a darle a Jesús en mi vida y cómo puedo demostrar su amor a los demás?',
-                commitment: 'Compartir tiempo de calidad con alguien que necesite compañía, atención o cariño.',
+                contentHtml: `
+                    <section class="liturgy-section">
+                        <p class="liturgy-rubric">Todos hacen la señal de la cruz.</p>
+                        <p class="liturgy-line"><span class="liturgy-role">Guía:</span> "Nuestro auxilio es en el nombre del Señor"</p>
+                        <p class="liturgy-line"><span class="liturgy-role is-all">Todos:</span> "Que hizo el cielo y la tierra"</p>
+                    </section>
+
+                    <section class="liturgy-section">
+                        <h3 class="liturgy-heading"><span class="heading-dot"></span>Liturgia de la Palabra</h3>
+                        <p class="liturgy-reading"><strong>Primera lectura: Rm 13,13-14</strong> "Conduzcámonos como en pleno día, con dignidad. Nada de comilonas y borracheras, nada de lujuria ni desenfreno, nada de riñas ni pendencias. Vestios del Señor Jesucristo". "Palabra de Dios"</p>
+                        <p class="liturgy-line"><span class="liturgy-role is-all">Todos:</span> "Te alabamos Señor".</p>
+
+                        <p class="liturgy-reading"><strong>Segunda lectura: 2 Tes. 1,6-7</strong> "Es justo a los ojos de Dios pagar con alivio a vosotros, los afligidos, y a nosotros, cuando el Señor Jesús se revele, viniendo del cielo acompañado de sus poderosos ángeles, entre las aclamaciones de sus pueblo santo y la admiración de todos los creyentes." - "Palabra de Dios"</p>
+                        <p class="liturgy-line"><span class="liturgy-role is-all">Todos:</span> "Te alabamos Señor".</p>
+                        <p class="liturgy-line"><span class="liturgy-role">Guía:</span> "Ven, Señor, y no tardes."</p>
+                        <p class="liturgy-line"><span class="liturgy-role is-all">Todos:</span> "Perdona los pecados de tu pueblo".</p>
+                    </section>
+
+                    <section class="liturgy-section is-highlight">
+                        <h3 class="liturgy-heading"><span class="heading-dot"></span>SE ENCIENDEN LAS CUATRO VELAS</h3>
+                        <p class="liturgy-line"><span class="liturgy-role">Guía:</span> "Bendigamos al Señor"</p>
+                        <p class="liturgy-rubric">Todos hacen la señal de la cruz mientras dicen: <span class="liturgy-role is-all">"Demos gracias a Dios".</span></p>
+                    </section>
+
+                    <section class="liturgy-section">
+                        <h3 class="liturgy-heading"><span class="heading-dot"></span>Humildad y gloria · El Nacimiento de Jesús</h3>
+                        <p class="liturgy-line"><span class="liturgy-role">Guía:</span> Lectura del Evangelio según San Lucas (2:6-7)</p>
+                        <p class="liturgy-reading">"Y sucedió que, mientras ellos estaban allí, se le cumplieron los días del alumbramiento, y dio a luz a su hijo primogénito, le envolvió en pañales y le acostó en un pesebre, porque no tenían sitio en el alojamiento."<br>"Palabra de Dios"</p>
+                        <p class="liturgy-line"><span class="liturgy-role is-all">Todos:</span> "Te alabamos Señor".</p>
+                    </section>
+
+                    <section class="liturgy-section">
+                        <h3 class="liturgy-heading"><span class="heading-dot"></span>MEDITACIÓN</h3>
+                        <p class="liturgy-line">La Virgen y San José, con su fe, esperanza y caridad salen victoriosos en la prueba. No hay rechazo, ni frío, ni oscuridad ni incomodidad que les pueda separar del amor de Cristo que nace. Ellos son los benditos de Dios que le reciben. Dios no encuentra lugar mejor que aquel pesebre, porque allí estaba el amor inmaculado que lo recibe.</p>
+                        <p class="liturgy-line">Nos unimos a La Virgen y San José con un sincero deseo de renunciar a todo lo que impide que Jesús nazca en nuestro corazón.</p>
+                        <p class="liturgy-rubric">Tiempo de silencio / Tiempo de intercesión</p>
+                        <p class="liturgy-rubric">Padre Nuestro / Ave María.</p>
+                    </section>
+
+                    <section class="liturgy-section is-highlight">
+                        <h3 class="liturgy-heading"><span class="heading-dot"></span>ORACIÓN FINAL</h3>
+                        <p class="liturgy-line">Derrama Señor, tu gracia sobre nosotros, que, por el anuncio del ángel, hemos conocido la encarnación de tu Hijo, para que lleguemos por su pasión y su cruz a la gloria de la resurrección. Por nuestro Señor Jesucristo.</p>
+                        <p class="liturgy-line"><span class="liturgy-role is-all">Todos:</span> "Amén"</p>
+                    </section>
+                `,
                 x: 655,
                 y: 282,
                 height: 118,
@@ -1558,10 +1680,9 @@
             }
         ];
 
-        // Estado de la aplicación (comienza con todas las velas apagadas)
+        // Estado de la aplicación
         const state = {
             litCandles: [false, false, false, false],
-            commitmentsDone: [false, false, false, false],
             activeWeekIndex: null,
             soundEnabled: true,
             celebrationTriggered: false
@@ -1577,22 +1698,15 @@
         const progressBarFillEl = document.getElementById('progressBarFill');
         const progressStepsEl = document.getElementById('progressSteps');
         const litCountTextEl = document.getElementById('litCountText');
-        const commitmentCountTextEl = document.getElementById('commitmentCountText');
 
-        // Referencias del modal de reflexión
+        // Referencias del modal
         const reflectionModalEl = document.getElementById('reflectionModal');
         const modalTopAccentEl = document.getElementById('modalTopAccent');
         const modalCandleBadgeEl = document.getElementById('modalCandleBadge');
         const modalBadgeWaxEl = document.getElementById('modalBadgeWax');
         const modalSubtitleEl = document.getElementById('modalSubtitle');
         const modalTitleEl = document.getElementById('modalTitle');
-        const modalReflectionEl = document.getElementById('modalReflection');
-        const modalPrayerEl = document.getElementById('modalPrayer');
-        const modalQuestionEl = document.getElementById('modalQuestion');
-        const modalCommitmentEl = document.getElementById('modalCommitment');
         const modalBodyEl = document.getElementById('modalBody');
-        const commitmentToggleBtn = document.getElementById('commitmentToggleBtn');
-        const commitmentBtnLabel = document.getElementById('commitmentBtnLabel');
         const prevWeekBtn = document.getElementById('prevWeekBtn');
         const nextWeekBtn = document.getElementById('nextWeekBtn');
         const closeModalBtn = document.getElementById('closeModalBtn');
@@ -1606,6 +1720,95 @@
         const soundToggleBtn = document.getElementById('soundToggleBtn');
         const soundIconOn = document.getElementById('soundIconOn');
         const soundIconOff = document.getElementById('soundIconOff');
+        const dateToastEl = document.getElementById('dateToast');
+        const dateToastTitleEl = document.getElementById('dateToastTitle');
+        const dateToastDescEl = document.getElementById('dateToastDesc');
+        const closeDateToastBtn = document.getElementById('closeDateToastBtn');
+        let dateToastTimer = null;
+
+        /**
+         * Persistencia y encendido automático al finalizar cada domingo
+         */
+        function isCandleUnlocked(index) {
+            return Boolean(ADVENT_WEEKS[index]);
+        }
+
+        function hasSundayEnded(index) {
+            const week = ADVENT_WEEKS[index];
+            if (!week) return false;
+            return new Date() >= week.endDate;
+        }
+
+        function saveLitState() {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(state.litCandles));
+            } catch (err) {
+                // Ignorar si localStorage no está disponible
+            }
+        }
+
+        function loadInitialLitState() {
+            let saved = [false, false, false, false];
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    if (Array.isArray(parsed) && parsed.length === 4) {
+                        saved = parsed.map(Boolean);
+                    }
+                }
+            } catch (err) {
+                saved = [false, false, false, false];
+            }
+
+            // Cada vela queda encendida si la persona ya la encendió o si su domingo ya finalizó
+            state.litCandles = ADVENT_WEEKS.map((_, idx) => {
+                return saved[idx] || hasSundayEnded(idx);
+            });
+
+            if (state.litCandles.every(Boolean)) {
+                state.celebrationTriggered = true;
+            }
+            saveLitState();
+        }
+
+        function syncFinishedSundays() {
+            let changed = false;
+            ADVENT_WEEKS.forEach((_, idx) => {
+                if (hasSundayEnded(idx) && !state.litCandles[idx]) {
+                    state.litCandles[idx] = true;
+                    changed = true;
+                }
+            });
+            if (changed) {
+                saveLitState();
+                updateVisualState();
+            }
+        }
+
+        function getDaysUntilUnlock(index) {
+            const now = new Date();
+            const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const diffMs = ADVENT_WEEKS[index].unlockDate - todayStart;
+            return Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
+        }
+
+        function showDateLockedNotice(index) {
+            const week = ADVENT_WEEKS[index];
+            const daysLeft = getDaysUntilUnlock(index);
+            const countdownText = daysLeft === 1
+                ? 'Falta 1 día.'
+                : (daysLeft > 1 ? `Faltan ${daysLeft} días.` : '');
+
+            dateToastTitleEl.textContent = `${week.title} espera su tiempo`;
+            dateToastDescEl.textContent = `Podrás encender esta vela a partir del ${week.unlockDateLabel}. ${countdownText}`.trim();
+
+            dateToastEl.classList.add('is-visible');
+            if (dateToastTimer) clearTimeout(dateToastTimer);
+            dateToastTimer = setTimeout(() => {
+                dateToastEl.classList.remove('is-visible');
+            }, 5200);
+        }
 
         /**
          * Síntesis de sonidos contemplativos suaves mediante Web Audio API
@@ -1804,7 +2007,7 @@
                     class: 'candle-unit',
                     tabindex: '0',
                     role: 'button',
-                    'aria-label': `Encender o ver reflexión de ${week.title}`
+                    'aria-label': `Encender o abrir ${week.title}`
                 });
 
                 const x = week.x;
@@ -1925,7 +2128,7 @@
 
                 targetLayer.appendChild(candleG);
 
-                // Etiqueta discreta debajo de cada vela
+                // Etiqueta discreta debajo de cada vela (sin temas)
                 const labelY = week.layer === 'front' ? baseY + 38 : baseY + 34;
                 const labelGroup = createSvgEl('g', {
                     id: `candle-label-${week.id}`,
@@ -1934,7 +2137,7 @@
                 });
 
                 labelGroup.appendChild(createSvgEl('rect', {
-                    x: -56, y: -13, width: 112, height: 24, rx: 12,
+                    x: -54, y: -13, width: 108, height: 24, rx: 12,
                     fill: 'rgba(11, 16, 38, 0.78)',
                     stroke: isRose ? 'rgba(244, 114, 182, 0.4)' : 'rgba(196, 181, 253, 0.3)',
                     'stroke-width': '1'
@@ -1948,7 +2151,7 @@
                     'font-weight': '500',
                     'font-family': 'Poppins, sans-serif'
                 });
-                textEl.textContent = `${week.roman} · ${week.shortName}`;
+                textEl.textContent = week.shortName;
                 labelGroup.appendChild(textEl);
 
                 labelGroup.addEventListener('click', () => handleCandleSelect(week.id));
@@ -1964,19 +2167,16 @@
 
             ADVENT_WEEKS.forEach((week, idx) => {
                 const isLit = state.litCandles[idx];
-                const isDone = state.commitmentsDone[idx];
                 const isRose = week.colorType === 'rose';
 
                 const btn = document.createElement('button');
                 btn.type = 'button';
                 btn.className = `progress-step${isLit ? ' is-lit' : ''}`;
+                btn.title = `Abrir ${week.title}`;
 
                 btn.innerHTML = `
                     <span class="step-dot ${isRose ? 'is-rose' : 'is-purple'}"></span>
-                    <span class="step-label">
-                        <span class="step-roman">${week.roman}. </span>${week.shortName}
-                    </span>
-                    ${isDone ? '<span class="step-check" title="Compromiso realizado">✓</span>' : ''}
+                    <span class="step-label">${week.shortName}</span>
                 `;
 
                 btn.addEventListener('click', () => handleCandleSelect(idx));
@@ -1992,6 +2192,8 @@
 
             if (!wasLit) {
                 state.litCandles[index] = true;
+                saveLitState();
+
                 const notes = [
                     [440, 554.37],
                     [493.88, 659.25],
@@ -2015,7 +2217,6 @@
          */
         function updateVisualState() {
             const litCount = state.litCandles.filter(Boolean).length;
-            const commitmentCount = state.commitmentsDone.filter(Boolean).length;
             const allLit = litCount === 4;
 
             ADVENT_WEEKS.forEach((week, idx) => {
@@ -2025,6 +2226,8 @@
 
                 const isLit = state.litCandles[idx];
                 candleEl.classList.toggle('is-lit', isLit);
+                candleEl.classList.remove('is-locked');
+                candleEl.setAttribute('aria-label', `Encender o abrir ${week.title}`);
 
                 const waxGlow = candleEl.querySelector('.wax-top-glow');
                 if (waxGlow) {
@@ -2038,11 +2241,13 @@
                         rect.setAttribute('stroke', 'rgba(253, 224, 71, 0.72)');
                         rect.setAttribute('fill', 'rgba(32, 22, 58, 0.9)');
                         text.setAttribute('fill', '#fef3c7');
+                        labelEl.style.opacity = '1';
                     } else {
                         const isRose = week.colorType === 'rose';
                         rect.setAttribute('stroke', isRose ? 'rgba(244, 114, 182, 0.4)' : 'rgba(196, 181, 253, 0.3)');
                         rect.setAttribute('fill', 'rgba(11, 16, 38, 0.78)');
                         text.setAttribute('fill', '#f1f5f9');
+                        labelEl.style.opacity = '1';
                     }
                 }
             });
@@ -2055,7 +2260,6 @@
             const progressPercent = (litCount / 4) * 100;
             progressBarFillEl.style.width = `${progressPercent}%`;
             litCountTextEl.textContent = `${litCount} de 4 ${litCount === 1 ? 'vela encendida' : 'velas encendidas'}`;
-            commitmentCountTextEl.textContent = `${commitmentCount} ${commitmentCount === 1 ? 'compromiso vivido' : 'compromisos vividos'}`;
 
             stageEl.classList.toggle('all-lit', allLit);
 
@@ -2076,9 +2280,9 @@
                 state.celebrationTriggered = false;
 
                 if (litCount === 0) {
-                    guideTextEl.textContent = 'Haz clic en una vela para encenderla y comenzar tu camino de Adviento';
+                    guideTextEl.textContent = 'Haz clic en una vela para encenderla y abrir la oración del domingo';
                 } else {
-                    guideTextEl.textContent = 'Haz clic en la siguiente vela para continuar iluminando tu camino de Adviento';
+                    guideTextEl.textContent = 'Haz clic en otra vela para encenderla o selecciona una vela encendida para leer su oración';
                 }
             }
 
@@ -2086,7 +2290,7 @@
         }
 
         /**
-         * Abrir y poblar la ventana de reflexión espiritual
+         * Abrir y poblar la ventana con la guía litúrgica del domingo
          */
         function openReflectionModal(index) {
             state.activeWeekIndex = index;
@@ -2095,6 +2299,7 @@
 
             if (!state.litCandles[index]) {
                 state.litCandles[index] = true;
+                saveLitState();
                 playContemplativeChime([523.25, 659.25], 2.0);
                 updateVisualState();
             }
@@ -2109,12 +2314,7 @@
 
             modalSubtitleEl.textContent = week.subtitle;
             modalTitleEl.textContent = week.title;
-            modalReflectionEl.textContent = week.reflection;
-            modalPrayerEl.textContent = week.prayer;
-            modalQuestionEl.textContent = week.question;
-            modalCommitmentEl.textContent = week.commitment;
-
-            updateCommitmentButtonUI(index);
+            modalBodyEl.innerHTML = week.contentHtml;
 
             prevWeekBtn.disabled = index === 0;
             nextWeekBtn.disabled = index === ADVENT_WEEKS.length - 1;
@@ -2129,22 +2329,17 @@
         }
 
         /**
-         * Actualiza la apariencia del botón "Mi compromiso"
-         */
-        function updateCommitmentButtonUI(index) {
-            const isDone = state.commitmentsDone[index];
-            commitmentToggleBtn.classList.toggle('is-done', isDone);
-            commitmentBtnLabel.textContent = isDone ? 'Compromiso realizado' : 'Mi compromiso';
-        }
-
-        /**
-         * Reiniciar toda la experiencia
+         * Reiniciar las velas encendidas
          */
         function resetExperience() {
             state.litCandles = [false, false, false, false];
-            state.commitmentsDone = [false, false, false, false];
             state.activeWeekIndex = null;
             state.celebrationTriggered = false;
+            try {
+                localStorage.removeItem(STORAGE_KEY);
+            } catch (err) {
+                // Ignorar
+            }
             closeReflectionModal();
             resetConfirmModal.classList.remove('is-open');
             updateVisualState();
@@ -2170,17 +2365,6 @@
             }
         });
 
-        commitmentToggleBtn.addEventListener('click', () => {
-            if (state.activeWeekIndex === null) return;
-            const idx = state.activeWeekIndex;
-            state.commitmentsDone[idx] = !state.commitmentsDone[idx];
-            if (state.commitmentsDone[idx]) {
-                playContemplativeChime([587.33, 880], 1.5);
-            }
-            updateCommitmentButtonUI(idx);
-            updateVisualState();
-        });
-
         // Controles de reinicio
         resetBtn.addEventListener('click', () => {
             resetConfirmModal.classList.add('is-open');
@@ -2191,6 +2375,11 @@
         confirmResetBtn.addEventListener('click', resetExperience);
         resetConfirmModal.addEventListener('click', (e) => {
             if (e.target === resetConfirmModal) resetConfirmModal.classList.remove('is-open');
+        });
+
+        closeDateToastBtn.addEventListener('click', () => {
+            dateToastEl.classList.remove('is-visible');
+            if (dateToastTimer) clearTimeout(dateToastTimer);
         });
 
         // Control de sonido
@@ -2331,10 +2520,14 @@
 
         window.onload = function () {
             buildWreathGeometry();
+            loadInitialLitState();
             updateVisualState();
             resizeCanvas();
             initAmbientParticles();
             animateParticles();
+
+            // Verificar periódicamente si finalizó algún domingo para mantener su vela encendida
+            setInterval(syncFinishedSundays, 60000);
         };
     </script>
 </body>
